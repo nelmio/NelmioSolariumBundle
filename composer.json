@@ -1,0 +1,25 @@
+{
+    "name": "nelmio/solarium-bundle",
+    "description": "Integration with solarium solr client.",
+    "keywords": ["solr", "solarium", "search"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nelmio",
+            "homepage": "http://nelm.io"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://github.com/nelmio/NelmioSolariumBundle/contributors"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "2.*",
+        "solarium/solarium": ">=2.3.0-dev"
+    },
+    "autoload": {
+        "psr-0": { "Nelmio\\SolariumBundle": "" }
+    },
+    "target-dir": "Nelmio/SolariumBundle"
+}
