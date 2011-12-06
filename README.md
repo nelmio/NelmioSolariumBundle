@@ -2,16 +2,28 @@
 
 ## About
 
-The NelmioSolariumBundle provides integration with the [solarium](www.solarium-project.org)
+The NelmioSolariumBundle provides integration with the [solarium](http://www.solarium-project.org)
 solr client.
 
 ## Features
 
-...
+Provides you with a `solarium.client` service in the Symfony2 DIC.
 
 ## Configuration
 
-...
+Here is the default configuration:
+
+    nelmio_solarium:
+        adapter:
+            class: Solarium_Client_Adapter_Http
+            host: 127.0.0.1
+            port: 8983
+            path: /solr
+
+At the very least you need to add this to your config:
+
+    nelmio_solarium:
+        adapter: ~
 
 ## Installation
 
