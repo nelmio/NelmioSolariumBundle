@@ -49,6 +49,16 @@ Add the NelmioSolariumBundle to your application's kernel:
         ...
     }
 
+You will also need the [solarium library](https://github.com/basdenooijer/solarium):
+
+    $ git clone git://github.com/basdenooijer/solarium.git vendor/solarium
+
+And the autoloader:
+
+    $loader->registerPrefixes(array(
+        'Solarium_'        => __DIR__.'/../vendor/solarium/library',
+    ));
+
 ## License
 
 Released under the MIT License, see LICENSE.
