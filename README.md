@@ -59,6 +59,21 @@ And the autoloader:
         'Solarium_'        => __DIR__.'/../vendor/solarium/library',
     ));
 
+## Usage
+
+In your Controllers you can access the Solarium instance using the `solarium.client` service, e.g.:
+
+```php
+        $client = $this->get('solarium.client');
+        $select = $client->createSelect();
+        $select->setQuery('foo');
+        $results = $client->select($select);
+```
+
+Then you can use `$results` in a `foreach` or twig `for` to display the results.
+
+For more information see the [Solarium documentation](http://www.solarium-project.org/documentation/).
+
 ## License
 
 Released under the MIT License, see LICENSE.
