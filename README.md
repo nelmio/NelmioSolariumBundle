@@ -19,6 +19,8 @@ Here is the default configuration:
             host: 127.0.0.1
             port: 8983
             path: /solr
+            core: ~
+            timeout: 5
 
 At the very least you need to add this to your config:
 
