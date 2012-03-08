@@ -33,16 +33,13 @@ class NelmioSolariumExtension extends Extension
             $options = array(
                 'adapter'           => $config['adapter']['class'],
                 'adapteroptions'    => array(
-                    'host'  => $config['adapter']['host'],
-                    'port'  => $config['adapter']['port'],
-                    'path'  => $config['adapter']['path'],
+                    'host'      => $config['adapter']['host'],
+                    'port'      => $config['adapter']['port'],
+                    'path'      => $config['adapter']['path'],
+                    'core'      => $config['adapter']['core'],
+                    'timeout'   => $config['adapter']['timeout'],
                 ),
             );
-            foreach (array('core', 'timeout',) as $option) {
-                if (isset($config['adapter'][$option])) {
-                    $options['adapteroptions'][$option] = $config['adapter'][$option];
-                }
-            }
             $container->setParameter('solarium.client.options', $options);
 
             $loader->load('services.yml');
