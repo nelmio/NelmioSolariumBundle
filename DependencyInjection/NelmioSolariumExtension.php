@@ -38,6 +38,11 @@ class NelmioSolariumExtension extends Extension
                     'path'  => $config['adapter']['path'],
                 ),
             );
+            foreach (array('core', 'timeout',) as $option) {
+                if (isset($config['adapter'][$option])) {
+                    $options['adapteroptions'][$option] = $config['adapter'][$option];
+                }
+            }
             $container->setParameter('solarium.client.options', $options);
 
             $loader->load('services.yml');
