@@ -29,6 +29,8 @@ class NelmioSolariumExtension extends Extension
         $config = $processor->processConfiguration($configuration, $configs);
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
+        $container->setParameter('solarium.client.class', $config['client']['class']);
+
         if (!empty($config['adapter'])) {
             $options = array(
                 'adapter'           => $config['adapter']['class'],

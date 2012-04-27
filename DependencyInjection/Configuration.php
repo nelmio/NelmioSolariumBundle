@@ -31,7 +31,14 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('nelmio_solarium');
 
         $rootNode
+            ->addDefaultsIfNotSet()
             ->children()
+                ->arrayNode('client')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('class')->isRequired()->cannotBeEmpty()->defaultValue('Solarium_Client')->end()
+                    ->end()
+                ->end()
                 ->arrayNode('adapter')
                     ->children()
                         ->scalarNode('class')->defaultValue('Solarium_Client_Adapter_Http')->end()
