@@ -32,6 +32,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->arrayNode('client')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('class')->cannotBeEmpty()->defaultValue('Solarium_Client')->end()
+                    ->end()
+                ->end()
                 ->arrayNode('adapter')
                     ->children()
                         ->scalarNode('class')->defaultValue('Solarium_Client_Adapter_Http')->end()
