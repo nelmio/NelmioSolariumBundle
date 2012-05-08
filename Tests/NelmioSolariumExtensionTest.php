@@ -47,6 +47,21 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf($adapterClass, $container->get('solarium.client')->getAdapter());
     }
 
+    public function testLoadCustomClient()
+    {
+        $client = $this->getMock('Solarium_Client');
+        $clientClass = get_class($client);
+
+        $config = array('adapter' => null, 'client' => array('class' => $clientClass));
+
+        $container = $this->createContainer();
+        $container->registerExtension(new NelmioSolariumExtension());
+        $container->loadFromExtension('nelmio_solarium', $config);
+        $this->compileContainer($container);
+
+        $this->assertInstanceOf($clientClass, $container->get('solarium.client'));
+    }
+
     private function createContainer()
     {
         $container = new ContainerBuilder(new ParameterBag(array(
