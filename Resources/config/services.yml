@@ -1,4 +1,4 @@
 services:
     solarium.client:
-        class: Solarium_Client
+        class: %solarium.client.class%
         arguments: [ %solarium.client.options% ]

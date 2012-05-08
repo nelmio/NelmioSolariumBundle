@@ -14,6 +14,8 @@ Provides you with a `solarium.client` service in the Symfony2 DIC.
 Here is the default configuration:
 
     nelmio_solarium:
+        client:
+            class: Solarium_Client
         adapter:
             class: Solarium_Client_Adapter_Http
             host: 127.0.0.1
