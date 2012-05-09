@@ -20,7 +20,7 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 {
     public function testLoadEmptyConfiguration()
     {
-        $config = array('adapter' => null);
+        $config = array();
 
         $container = $this->createContainer();
         $container->registerExtension(new NelmioSolariumExtension());
@@ -49,17 +49,15 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadCustomClient()
     {
-        $client = $this->getMock('Solarium_Client');
-        $clientClass = get_class($client);
-
-        $config = array('adapter' => null, 'client' => array('class' => $clientClass));
+        $config = array('client' => array('class' => 'Nelmio\SolariumBundle\Tests\StubClient'));
 
         $container = $this->createContainer();
         $container->registerExtension(new NelmioSolariumExtension());
         $container->loadFromExtension('nelmio_solarium', $config);
         $this->compileContainer($container);
 
-        $this->assertInstanceOf($clientClass, $container->get('solarium.client'));
+        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client'));
+        $this->assertInstanceOf('Solarium_Client_Adapter_Http', $container->get('solarium.client')->getAdapter());
     }
 
     private function createContainer()
@@ -79,4 +77,8 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $container->getCompilerPassConfig()->setRemovingPasses(array());
         $container->compile();
     }
+}
+
+class StubClient extends \Solarium_Client
+{
 }
