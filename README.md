@@ -11,9 +11,12 @@ Provides you with a `solarium.client` service in the Symfony2 DIC.
 
 ## Configuration
 
-Here is the default configuration:
+Here is the default configuration that will be used if you do not configure
+anything:
 
     nelmio_solarium:
+        client:
+            class: Solarium_Client
         adapter:
             class: Solarium_Client_Adapter_Http
             host: 127.0.0.1
@@ -21,11 +24,6 @@ Here is the default configuration:
             path: /solr
             core: ~
             timeout: 5
-
-At the very least you need to add this to your config:
-
-    nelmio_solarium:
-        adapter: ~
 
 ## Installation
 

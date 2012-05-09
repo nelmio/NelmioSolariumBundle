@@ -29,20 +29,20 @@ class NelmioSolariumExtension extends Extension
         $config = $processor->processConfiguration($configuration, $configs);
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if (!empty($config['adapter'])) {
-            $options = array(
-                'adapter'           => $config['adapter']['class'],
-                'adapteroptions'    => array(
-                    'host'      => $config['adapter']['host'],
-                    'port'      => $config['adapter']['port'],
-                    'path'      => $config['adapter']['path'],
-                    'core'      => $config['adapter']['core'],
-                    'timeout'   => $config['adapter']['timeout'],
-                ),
-            );
-            $container->setParameter('solarium.client.options', $options);
+        $container->setParameter('solarium.client.class', $config['client']['class']);
 
-            $loader->load('services.yml');
-        }
+        $options = array(
+            'adapter'           => $config['adapter']['class'],
+            'adapteroptions'    => array(
+                'host'      => $config['adapter']['host'],
+                'port'      => $config['adapter']['port'],
+                'path'      => $config['adapter']['path'],
+                'core'      => $config['adapter']['core'],
+                'timeout'   => $config['adapter']['timeout'],
+            ),
+        );
+        $container->setParameter('solarium.client.options', $options);
+
+        $loader->load('services.yml');
     }
 }
