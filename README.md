@@ -22,8 +22,13 @@ anything:
             host: 127.0.0.1
             port: 8983
             path: /solr
-            core: ~
             timeout: 5
+            cores: ~
+
+You can define cores like this :
+            ...
+            cores:
+                cms: cms_core_path
 
 ## Installation
 
@@ -68,6 +73,12 @@ In your Controllers you can access the Solarium instance using the `solarium.cli
         $select = $client->createSelect();
         $select->setQuery('foo');
         $results = $client->select($select);
+```
+
+If you have define a core, you can access by config name like this :
+
+```php
+        $client = $this->get('solarium.client.cms');
 ```
 
 Then you can use `$results` in a `foreach` or twig `for` to display the results.
