@@ -22,10 +22,7 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $config = array();
 
-        $container = $this->createContainer();
-        $container->registerExtension(new NelmioSolariumExtension());
-        $container->loadFromExtension('nelmio_solarium', $config);
-        $this->compileContainer($container);
+        $container = $this->createCompiledContainerForConfig($config);
 
         $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client'));
         $this->assertInstanceOf('Solarium_Client_Adapter_Http', $container->get('solarium.client')->getAdapter());
@@ -38,10 +35,7 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $config = array('adapter' => array('class' => $adapterClass));
 
-        $container = $this->createContainer();
-        $container->registerExtension(new NelmioSolariumExtension());
-        $container->loadFromExtension('nelmio_solarium', $config);
-        $this->compileContainer($container);
+        $container = $this->createCompiledContainerForConfig($config);
 
         $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client'));
         $this->assertInstanceOf($adapterClass, $container->get('solarium.client')->getAdapter());
@@ -51,13 +45,30 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $config = array('client' => array('class' => 'Nelmio\SolariumBundle\Tests\StubClient'));
 
+        $container = $this->createCompiledContainerForConfig($config);
+
+        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client'));
+        $this->assertInstanceOf('Solarium_Client_Adapter_Http', $container->get('solarium.client')->getAdapter());
+    }
+
+    public function testLoadWithCores()
+    {
+        $config = array('adapter' => array('cores' => array('a' => 'core_a', 'b' => 'core_b')));
+
+        $container = $this->createCompiledContainerForConfig($config);
+
+        $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client.a'));
+        $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client.b'));
+    }
+
+    private function createCompiledContainerForConfig($config)
+    {
         $container = $this->createContainer();
         $container->registerExtension(new NelmioSolariumExtension());
         $container->loadFromExtension('nelmio_solarium', $config);
         $this->compileContainer($container);
 
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client'));
-        $this->assertInstanceOf('Solarium_Client_Adapter_Http', $container->get('solarium.client')->getAdapter());
+        return $container;
     }
 
     private function createContainer()

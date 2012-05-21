@@ -39,11 +39,11 @@ class NelmioSolariumExtension extends Extension
         }
     }
 
-    protected function loadCore($core, $path, ContainerBuilder $container, array $config)
+    protected function loadCore($name, $path, ContainerBuilder $container, array $config)
     {
         $container
             ->setDefinition(sprintf('solarium.client.%s', $name), new Definition($config['client']['class']))
-            ->setArguments(array($this->createOptionsFromConfig($core, $config)));
+            ->setArguments(array($this->createOptionsFromConfig($name, $config)));
     }
 
     protected function createOptionsFromConfig($core, $config)
