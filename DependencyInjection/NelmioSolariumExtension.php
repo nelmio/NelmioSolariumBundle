@@ -30,18 +30,7 @@ class NelmioSolariumExtension extends Extension
 
         $container
             ->setDefinition('solarium.client', new Definition($config['client']['class']))
-            ->setArguments(
-                array(
-                    $this->createOptions(
-                        $config['adapter']['class'],
-                        $config['adapter']['host'],
-                        $config['adapter']['port'],
-                        $config['adapter']['path'],
-                        null,
-                        $config['adapter']['timeout']
-                    )
-                )
-            );
+            ->setArguments(array($this->createOptionsFromConfig(null, $config)));
 
         if (isset($config['adapter']['cores'])) {
             foreach ($config['adapter']['cores'] as $name => $path) {
@@ -50,35 +39,24 @@ class NelmioSolariumExtension extends Extension
         }
     }
 
-    protected function loadCore($name, $path, ContainerBuilder $container, array $config)
+    protected function loadCore($core, $path, ContainerBuilder $container, array $config)
     {
         $container
             ->setDefinition(sprintf('solarium.client.%s', $name), new Definition($config['client']['class']))
-            ->setArguments(
-                array(
-                    $this->createOptions(
-                        $config['adapter']['class'],
-                        $config['adapter']['host'],
-                        $config['adapter']['port'],
-                        $config['adapter']['path'],
-                        $name,
-                        $config['adapter']['timeout']
-                    )
-                )
-            );
+            ->setArguments(array($this->createOptionsFromConfig($core, $config)));
     }
 
-    protected function createOptions($class = null, $host = null, $port = null, $path = null, $core = null,  $timeout = null)
+    protected function createOptionsFromConfig($core, $config)
     {
         return array(
-            'adapter' => $class,
+            'adapter' => $config['adapter']['class'],
             'adapteroptions' => array(
-                'host'    => $host,
-                'port'    => $port,
-                'path'    => $path,
+                'host'    => $config['adapter']['host'],
+                'port'    => $config['adapter']['port'],
+                'path'    => $config['adapter']['path'],
                 'core'    => $core,
-                'timeout' => $timeout
-                )
+                'timeout' => $config['adapter']['timeout'],
+            ),
         );
     }
 }
