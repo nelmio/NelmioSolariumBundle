@@ -25,7 +25,8 @@ anything:
             timeout: 5
             cores: ~
 
-You can define cores like this :
+You can define cores like this:
+
             ...
             cores:
                 cms: cms_core_path
@@ -75,7 +76,7 @@ In your Controllers you can access the Solarium instance using the `solarium.cli
         $results = $client->select($select);
 ```
 
-If you have define a core, you can access by config name like this :
+If you have defined a core, you can access it by config name like this :
 
 ```php
         $client = $this->get('solarium.client.cms');
