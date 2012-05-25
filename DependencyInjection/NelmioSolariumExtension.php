@@ -54,7 +54,7 @@ class NelmioSolariumExtension extends Extension
                 'host'    => $config['adapter']['host'],
                 'port'    => $config['adapter']['port'],
                 'path'    => $config['adapter']['path'],
-                'core'    => $core,
+                'core'    => (null !== $core) ? $config['adapter']['cores'][$core] : null,
                 'timeout' => $config['adapter']['timeout'],
             ),
         );
