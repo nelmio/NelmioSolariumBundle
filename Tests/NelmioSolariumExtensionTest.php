@@ -61,9 +61,9 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client.b'));
 
         $adapterOptions = array(
-            'a'             => $container->get('solarium.client.a')->getOption('adapteroptions'),
-            'b'             => $container->get('solarium.client.b')->getOption('adapteroptions'),
-            );
+            'a' => $container->get('solarium.client.a')->getOption('adapteroptions'),
+            'b' => $container->get('solarium.client.b')->getOption('adapteroptions'),
+        );
         $this->assertEquals('core_a', $adapterOptions['a']['core']);
         $this->assertEquals('core_b', $adapterOptions['b']['core']);
     }
