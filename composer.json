@@ -24,5 +24,10 @@
     "autoload": {
         "psr-0": { "Nelmio\\SolariumBundle": "" }
     },
-    "target-dir": "Nelmio/SolariumBundle"
+    "target-dir": "Nelmio/SolariumBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
 }
