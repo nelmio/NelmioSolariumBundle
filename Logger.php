@@ -19,7 +19,7 @@ class Logger extends Solarium_Plugin_Abstract implements DataCollectorInterface
     {
         $this->queries[] = array('request' => $request, 'response' => $response, 'duration' => $duration);
     }
-    
+
     public function collect(HttpRequest $request, HttpResponse $response, \Exception $exception = null)
     {
         $time = 0;
@@ -34,7 +34,7 @@ class Logger extends Solarium_Plugin_Abstract implements DataCollectorInterface
 
     public function getName()
     {
-        return 'solarium';
+        return 'solr';
     }
 
     public function getQueryCount()
@@ -51,7 +51,7 @@ class Logger extends Solarium_Plugin_Abstract implements DataCollectorInterface
     {
         return array_key_exists('total_time', $this->data) ? $this->data['total_time'] : 0;
     }
-    
+
     public function preExecuteRequest($request)
     {
         if (isset($this->currentRequest)) {

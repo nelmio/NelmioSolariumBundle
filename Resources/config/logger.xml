@@ -8,7 +8,7 @@
     </parameters>
     <services>
         <service id="solarium.data_collector" class="%solarium.data_collector.class%">
-            <tag name="data_collector" template="NelmioSolariumBundle:DataCollector:solarium" id="solarium" />
+            <tag name="data_collector" template="NelmioSolariumBundle:DataCollector:solarium" id="solr" />
         </service>
     </services>
 </container>

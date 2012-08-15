@@ -2,12 +2,14 @@
 
 {% block toolbar %}
     {% set icon %}
-        <img width="43" height="28" alt="Solarium" style="border-width: 0; vertical-align: middle; margin-right: 5px;" src="{{ asset('bundles/nelmiosolarium/images/profiler/solarium_logo.png') }}" />
-        <span class="sf-toolbar-status">{{ collector.querycount }}</span>
+        <img width="28" height="28" alt="Solr" src="{{ asset('bundles/nelmiosolarium/images/profiler/solr28.png') }}" />
+        {% if collector.querycount %}
+            <span class="sf-toolbar-status">{{ collector.querycount }}</span>
+        {% endif %}
     {% endset %}
     {% set text %}
         <div class="sf-toolbar-info-piece">
-            <b>SolR Requests</b>
+            <b>Solr Requests</b>
             <span>{{ collector.querycount }}</span>
         </div>
         <div class="sf-toolbar-info-piece">
@@ -20,8 +22,8 @@
 
 {% block menu %}
 <span class="label">
-    <span class="icon"><img src="{{ asset('bundles/nelmiosolarium/images/profiler/solarium_logo.png') }}" alt="Solarium" /></span>
-    <strong>Solarium</strong>
+    <span class="icon"><img src="{{ asset('bundles/nelmiosolarium/images/profiler/solr.png') }}" alt="Solarium" /></span>
+    <strong>Solr</strong>
     <span class="count">
         <span>{{ collector.queryCount }}</span>
         <span>{{ '%0.0f'|format(collector.totaltime) }} ms</span>
