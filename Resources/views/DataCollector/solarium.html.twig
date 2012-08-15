@@ -1,0 +1,54 @@
+{% extends app.request.isXmlHttpRequest ? 'WebProfilerBundle:Profiler:ajax_layout.html.twig' : 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <img width="43" height="28" alt="Solarium" style="border-width: 0; vertical-align: middle; margin-right: 5px;" src="{{ asset('bundles/nelmiosolarium/images/profiler/solarium_logo.png') }}" />
+        <span class="sf-toolbar-status">{{ collector.querycount }}</span>
+    {% endset %}
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>SolR Requests</b>
+            <span>{{ collector.querycount }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Total time</b>
+            <span>{{ '%0.2f'|format(collector.totaltime) }} ms</span>
+        </div>
+    {% endset %}
+    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
+{% endblock %}
+
+{% block menu %}
+<span class="label">
+    <span class="icon"><img src="{{ asset('bundles/nelmiosolarium/images/profiler/solarium_logo.png') }}" alt="Solarium" /></span>
+    <strong>Solarium</strong>
+    <span class="count">
+        <span>{{ collector.queryCount }}</span>
+        <span>{{ '%0.0f'|format(collector.totaltime) }} ms</span>
+    </span>
+</span>
+{% endblock %}
+
+{% block panel %}
+    {% if collector.queries is empty %}
+        <p>
+            <em>No queries.</em>
+        </p>
+    {% else %}
+        <ul class="alt">
+        {% for i, query in collector.queries %}
+            <li class="{{ cycle(['odd', 'even'], i) }}">
+                <div>
+                    <code>{{ query.request.uri }}<br/>
+                    {{ query.request.rawdata }}</code>
+                    <hr/>
+                    <code>
+                        HTTP-Result: {{ query.response.statuscode }} ({{ '%0.4f'|format(query.duration) }} ms)<br/>
+                        {{ query.response.body }}
+                    </code>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

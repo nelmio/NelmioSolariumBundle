@@ -16,6 +16,9 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
@@ -27,36 +30,56 @@ class NelmioSolariumExtension extends Extension
         $processor     = new Processor();
         $configuration = new Configuration();
         $config        = $processor->processConfiguration($configuration, $configs);
-
-        $container
-            ->setDefinition('solarium.client', new Definition($config['client']['class']))
-            ->setArguments(array($this->createOptionsFromConfig(null, $config)));
-
+        $loader        = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        
+        $this->createClient(null, $container, $config);
         if (isset($config['adapter']['cores'])) {
             foreach ($config['adapter']['cores'] as $name => $path) {
-                $this->loadCore($name, $path, $container, $config);
+                $this->createClient($name, $container, $config);
             }
+        }
+        if (true === $container->getParameter('kernel.debug')) {
+            $loader->load('logger.xml');
         }
     }
 
-    protected function loadCore($name, $path, ContainerBuilder $container, array $config)
+    protected function createClient($name, ContainerBuilder $container, array $config)
     {
+        if (null === $name) {
+            $clientName = 'solarium.client';
+            $adapterName = 'solarium.adapter.default';
+        } else {
+            $clientName = sprintf('solarium.client.%s', $name);
+            $adapterName = 'solarium.adapter.core.' . $name;
+        }
+        $clientDefinition = new Definition($config['client']['class']);
         $container
-            ->setDefinition(sprintf('solarium.client.%s', $name), new Definition($config['client']['class']))
-            ->setArguments(array($this->createOptionsFromConfig($name, $config)));
+            ->setDefinition($clientName, $clientDefinition)
+            ->setArguments(array());
+        
+        $debug = $container->getParameter('kernel.debug');
+        $arguments = array($this->createAdapterOptionsFromConfig($name, $config));
+        $container
+            ->setDefinition($adapterName, new Definition($config['adapter']['class']))
+            ->setArguments($arguments);
+        
+        $adapter = new Reference($adapterName);
+        $container->getDefinition($clientName)->addMethodCall('setAdapter', array($adapter));
+
+        if ($debug) {
+            $logger = new Reference('solarium.data_collector');
+            $container->getDefinition($clientName)->addMethodCall('registerPlugin', array($clientName . '.logger', $logger));
+        }
     }
 
-    protected function createOptionsFromConfig($core, $config)
+    protected function createAdapterOptionsFromConfig($core, $config)
     {
         return array(
-            'adapter' => $config['adapter']['class'],
-            'adapteroptions' => array(
-                'host'    => $config['adapter']['host'],
-                'port'    => $config['adapter']['port'],
-                'path'    => $config['adapter']['path'],
-                'core'    => (null !== $core) ? $config['adapter']['cores'][$core] : null,
-                'timeout' => $config['adapter']['timeout'],
-            ),
+            'host'    => $config['adapter']['host'],
+            'port'    => $config['adapter']['port'],
+            'path'    => $config['adapter']['path'],
+            'core'    => (null !== $core) ? $config['adapter']['cores'][$core] : null,
+            'timeout' => $config['adapter']['timeout'],
         );
     }
 }
