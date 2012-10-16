@@ -31,13 +31,44 @@ class NelmioSolariumExtension extends Extension
         $configuration = new Configuration();
         $config        = $processor->processConfiguration($configuration, $configs);
         $loader        = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        
+
+        print_r($config);
+
+        foreach ($config['clients'] as $name => $client_data) {
+            if ($name == 'default') {
+                $clientName = 'solarium.client';
+                $adapterName = 'solarium.client.adapter';
+            } else {
+                $clientName = sprintf('solarium.client.%s', $name);
+                $adapterName = 'solarium.adapter.' . $name;
+            }
+
+            $clientDefinition = new Definition($client_data['class']);
+            $container
+                ->setDefinition($clientName, $clientDefinition)
+                ->setArguments(array($client_data));
+
+            if (isset($client_data['adapter'])) {
+                //$arguments = array($this->createAdapterOptionsFromConfig($name, $config));
+                $arguments = array();
+                $container
+                    ->setDefinition($adapterName, new Definition($client_data['adapter']))
+                    ->setArguments($arguments)
+                ;
+
+                $adapter = new Reference($adapterName);
+                $container->getDefinition($clientName)->addMethodCall('setAdapter', array($adapter));
+            }
+        }
+
+        /*
         $this->createClient(null, $container, $config);
         if (isset($config['adapter']['cores'])) {
             foreach ($config['adapter']['cores'] as $name => $path) {
                 $this->createClient($name, $container, $config);
             }
         }
+        */
         if (true === $container->getParameter('kernel.debug')) {
             $loader->load('logger.xml');
         }
@@ -56,13 +87,13 @@ class NelmioSolariumExtension extends Extension
         $container
             ->setDefinition($clientName, $clientDefinition)
             ->setArguments(array());
-        
+
         $debug = $container->getParameter('kernel.debug');
         $arguments = array($this->createAdapterOptionsFromConfig($name, $config));
         $container
             ->setDefinition($adapterName, new Definition($config['adapter']['class']))
             ->setArguments($arguments);
-        
+
         $adapter = new Reference($adapterName);
         $container->getDefinition($clientName)->addMethodCall('setAdapter', array($adapter));
 

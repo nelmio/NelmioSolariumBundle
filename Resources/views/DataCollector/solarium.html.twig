@@ -3,18 +3,19 @@
 {% block toolbar %}
     {% set icon %}
         <img width="28" height="28" alt="Solr" src="{{ asset('bundles/nelmiosolarium/images/profiler/solr28.png') }}" />
-        {% if collector.querycount %}
-            <span class="sf-toolbar-status">{{ collector.querycount }}</span>
+        <span class="sf-toolbar-status{% if 50 < collector.querycount %} sf-toolbar-status-yellow{% endif %}">{{ collector.querycount }}</span>
+        {% if collector.querycount > 0 %}
+            <span class="sf-toolbar-info-piece-additional-detail">in {{ '%0.2f'|format(collector.totaltime * 1000) }} ms</span>
         {% endif %}
     {% endset %}
     {% set text %}
         <div class="sf-toolbar-info-piece">
-            <b>Solr Requests</b>
+            <b>Solr Queries</b>
             <span>{{ collector.querycount }}</span>
         </div>
         <div class="sf-toolbar-info-piece">
-            <b>Total time</b>
-            <span>{{ '%0.2f'|format(collector.totaltime) }} ms</span>
+            <b>Query time</b>
+            <span>{{ '%0.2f'|format(collector.totaltime * 1000) }} ms</span>
         </div>
     {% endset %}
     {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
