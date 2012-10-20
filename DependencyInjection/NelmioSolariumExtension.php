@@ -32,85 +32,43 @@ class NelmioSolariumExtension extends Extension
         $config        = $processor->processConfiguration($configuration, $configs);
         $loader        = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        print_r($config);
+        $default_client = $config['default_client'];
 
-        foreach ($config['clients'] as $name => $client_data) {
-            if ($name == 'default') {
-                $clientName = 'solarium.client';
-                $adapterName = 'solarium.client.adapter';
+        foreach ($config['clients'] as $name => $client_options) {
+            $client_name = sprintf('solarium.client.%s', $name);
+            $adapter_name = sprintf('solarium.client.adapter.%s', $name);
+
+            if (isset($client_options['client_class'])) {
+                $client_class = $client_options['client_class'];
+                unset($client_options['client_class']);
             } else {
-                $clientName = sprintf('solarium.client.%s', $name);
-                $adapterName = 'solarium.adapter.' . $name;
+                $client_class = 'Solarium_Client';
             }
 
-            $clientDefinition = new Definition($client_data['class']);
+            if (isset($client_options['adapter_class'])) {
+                $adapter_class = $client_options['adapter_class'];
+                unset($client_options['adapter_class']);
+            } else {
+                $adapter_class = 'Solarium_Client_Adapter_Http';
+            }
+
+            $clientDefinition = new Definition($client_class);
+            $container->setDefinition($client_name, $clientDefinition);
+
+            if ($name == $default_client) {
+                $container->setAlias('solarium.client', $client_name);
+            }
+
             $container
-                ->setDefinition($clientName, $clientDefinition)
-                ->setArguments(array($client_data));
+                ->setDefinition($adapter_name, new Definition($adapter_class))
+                ->setArguments(array($client_options));
 
-            if (isset($client_data['adapter'])) {
-                //$arguments = array($this->createAdapterOptionsFromConfig($name, $config));
-                $arguments = array();
-                $container
-                    ->setDefinition($adapterName, new Definition($client_data['adapter']))
-                    ->setArguments($arguments)
-                ;
-
-                $adapter = new Reference($adapterName);
-                $container->getDefinition($clientName)->addMethodCall('setAdapter', array($adapter));
-            }
+            $adapter = new Reference($adapter_name);
+            $container->getDefinition($client_name)->addMethodCall('setAdapter', array($adapter));
         }
 
-        /*
-        $this->createClient(null, $container, $config);
-        if (isset($config['adapter']['cores'])) {
-            foreach ($config['adapter']['cores'] as $name => $path) {
-                $this->createClient($name, $container, $config);
-            }
-        }
-        */
         if (true === $container->getParameter('kernel.debug')) {
             $loader->load('logger.xml');
         }
-    }
-
-    protected function createClient($name, ContainerBuilder $container, array $config)
-    {
-        if (null === $name) {
-            $clientName = 'solarium.client';
-            $adapterName = 'solarium.adapter.default';
-        } else {
-            $clientName = sprintf('solarium.client.%s', $name);
-            $adapterName = 'solarium.adapter.core.' . $name;
-        }
-        $clientDefinition = new Definition($config['client']['class']);
-        $container
-            ->setDefinition($clientName, $clientDefinition)
-            ->setArguments(array());
-
-        $debug = $container->getParameter('kernel.debug');
-        $arguments = array($this->createAdapterOptionsFromConfig($name, $config));
-        $container
-            ->setDefinition($adapterName, new Definition($config['adapter']['class']))
-            ->setArguments($arguments);
-
-        $adapter = new Reference($adapterName);
-        $container->getDefinition($clientName)->addMethodCall('setAdapter', array($adapter));
-
-        if ($debug) {
-            $logger = new Reference('solarium.data_collector');
-            $container->getDefinition($clientName)->addMethodCall('registerPlugin', array($clientName . '.logger', $logger));
-        }
-    }
-
-    protected function createAdapterOptionsFromConfig($core, $config)
-    {
-        return array(
-            'host'    => $config['adapter']['host'],
-            'port'    => $config['adapter']['port'],
-            'path'    => $config['adapter']['path'],
-            'core'    => (null !== $core) ? $config['adapter']['cores'][$core] : null,
-            'timeout' => $config['adapter']['timeout'],
-        );
     }
 }

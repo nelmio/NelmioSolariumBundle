@@ -37,12 +37,10 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $adapter = $this->getMock('Solarium_Client_Adapter');
         $adapterClass = get_class($adapter);
 
-        $config = array('adapter' => array('class' => $adapterClass));
-
         $config = array(
             'clients' => array(
                 'default' => array(
-                    'adapter' => $adapterClass
+                    'adapter_class' => $adapterClass
                 )
             )
         );
@@ -53,10 +51,15 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf($adapterClass, $container->get('solarium.client')->getAdapter());
     }
 
-    /*
     public function testLoadCustomClient()
     {
-        $config = array('client' => array('class' => 'Nelmio\SolariumBundle\Tests\StubClient'));
+        $config = array(
+            'clients' => array(
+                'default' => array(
+                    'client_class' => 'Nelmio\SolariumBundle\Tests\StubClient'
+                )
+            )
+        );
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -64,24 +67,24 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Solarium_Client_Adapter_Http', $container->get('solarium.client')->getAdapter());
     }
 
-    public function testLoadWithCores()
+    public function testDefaultClient()
     {
-        $config = array('adapter' => array('cores' => array('a' => 'core_a', 'b' => 'core_b')));
+        $config = array(
+            'default_client' => 'client2',
+            'clients' => array(
+                'client1' => array(),
+                'client2' => array(
+                    'client_class' => 'Nelmio\SolariumBundle\Tests\StubClient'
+                )
+            ),
+        );
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client.a'));
-        $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client.b'));
-
-        $adapterOptions = array(
-            'a' => $container->get('solarium.client.a')->getAdapter()->getOptions(),
-            'b' => $container->get('solarium.client.b')->getAdapter()->getOptions(),
-        );
-
-        $this->assertEquals('core_a', $adapterOptions['a']['core']);
-        $this->assertEquals('core_b', $adapterOptions['b']['core']);
+        $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client.client1'));
+        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client'));
+        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client.client2'));
     }
-    */
 
     private function createCompiledContainerForConfig($config)
     {
