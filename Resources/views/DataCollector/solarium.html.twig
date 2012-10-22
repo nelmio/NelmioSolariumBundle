@@ -53,21 +53,21 @@
                     #}
                     <table style="width:45%">
                         <thead>
-					        <tr>
-					            <th scope="col">Key</th>
-					            <th scope="col">Value</th>
-					        </tr>
-					    </thead>
-					    <tbody>
+                            <tr>
+                                <th scope="col">Key</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                     {% for key, value in query.request.params %}
-	                        <tr>
-	                            <td><b>{{ key }}</b></td>
-	                            {% if value|keys %}
-	                            <td>{{ value|join('<br />')|raw }}</td>
-	                            {% else %}
-	                            <td>{{ value }}</td>
-	                            {% endif %}
-	                        </tr>
+                            <tr>
+                                <td><b>{{ key }}</b></td>
+                                {% if value|keys %}
+                                <td>{{ value|join('<br />')|raw }}</td>
+                                {% else %}
+                                <td>{{ value }}</td>
+                                {% endif %}
+                            </tr>
                     {% endfor %}
                         </tbody>
                     </table>
