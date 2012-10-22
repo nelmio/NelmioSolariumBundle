@@ -30,7 +30,14 @@ class NelmioSolariumExtension extends Extension
         $processor     = new Processor();
         $configuration = new Configuration();
         $config        = $processor->processConfiguration($configuration, $configs);
-        $loader        = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+
+        if ($container->getParameter('kernel.debug') === true) {
+            $is_debug = true;
+            $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+            $loader->load('logger.xml');
+        } else {
+            $is_debug = false;
+        }
 
         $default_client = $config['default_client'];
 
@@ -65,10 +72,11 @@ class NelmioSolariumExtension extends Extension
 
             $adapter = new Reference($adapter_name);
             $container->getDefinition($client_name)->addMethodCall('setAdapter', array($adapter));
-        }
 
-        if (true === $container->getParameter('kernel.debug')) {
-            $loader->load('logger.xml');
+            if ($is_debug) {
+                $logger = new Reference('solarium.data_collector');
+                $container->getDefinition($client_name)->addMethodCall('registerPlugin', array($client_name . '.logger', $logger));
+            }
         }
     }
 }
