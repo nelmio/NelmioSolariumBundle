@@ -17,7 +17,12 @@ class Logger extends Solarium_Plugin_Abstract implements DataCollectorInterface
 
     public function log(SolariumRequest $request, SolariumResponse $response, $duration)
     {
-        $this->queries[] = array('request' => $request, 'response' => $response, 'duration' => $duration);
+        $this->queries[] = array(
+            'request' => $request,
+            'response' => $response,
+            'duration' => $duration,
+            'base_uri' => $this->_client->getAdapter()->getBaseUri()
+        );
     }
 
     public function collect(HttpRequest $request, HttpResponse $response, \Exception $exception = null)
@@ -37,14 +42,14 @@ class Logger extends Solarium_Plugin_Abstract implements DataCollectorInterface
         return 'solr';
     }
 
-    public function getQueryCount()
-    {
-        return array_key_exists('queries', $this->data) ? count($this->data['queries']) : 0;
-    }
-
     public function getQueries()
     {
         return array_key_exists('queries', $this->data) ? $this->data['queries'] : array();
+    }
+
+    public function getQueryCount()
+    {
+        return count($this->getQueries());
     }
 
     public function getTotalTime()
@@ -70,7 +75,9 @@ class Logger extends Solarium_Plugin_Abstract implements DataCollectorInterface
         if ($this->currentRequest !== $request) {
             throw new \RuntimeException('Requests differ');
         }
-        $this->queries[] = array('request' => $request, 'response' => $response, 'duration' => microtime(true) - $this->currentStartTime);
+
+        $this->log($request, $response, microtime(true) - $this->currentStartTime);
+
         $this->currentRequest = null;
         $this->currentStartTime = null;
     }
