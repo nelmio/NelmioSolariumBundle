@@ -34,7 +34,6 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('default_client')->cannotBeEmpty()->defaultValue('default')->end()
                 ->arrayNode('clients')
-                ->isRequired()
                 ->requiresAtLeastOneElement()
                 ->prototype('array')
                     ->prototype('variable')
