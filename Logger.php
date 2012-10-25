@@ -70,7 +70,7 @@ class Logger extends Solarium_Plugin_Abstract implements DataCollectorInterface
         if ($this->currentRequest !== $request) {
             throw new \RuntimeException('Requests differ');
         }
-        $this->queries[] = array('request' => $request, 'response' => $response, 'duration' => microtime(true) - $this->currentStartTime);
+        $this->queries[] = array('request' => $request, 'response' => $response, 'duration' => (microtime(true) - $this->currentStartTime) * 1000);
         $this->currentRequest = null;
         $this->currentStartTime = null;
     }
