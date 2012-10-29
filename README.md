@@ -5,45 +5,25 @@
 The NelmioSolariumBundle provides integration with the [solarium](http://www.solarium-project.org)
 solr client.
 
-## Features
-
-Provides you with a `solarium.client` service in the Symfony2 DIC.
-
-## Configuration
-
-Here is the default configuration that will be used if you do not configure
-anything:
-
-    nelmio_solarium:
-        client:
-            class: Solarium_Client
-        adapter:
-            class: Solarium_Client_Adapter_Http
-            host: 127.0.0.1
-            port: 8983
-            path: /solr
-            timeout: 5
-            cores: ~
-
-You can define cores like this:
-
-            ...
-            cores:
-                cms: cms_core_path
-
 ## Installation
 
-Put the NelmioSolariumBundle into the ``vendor/bundles/Nelmio`` directory:
+Add NelmioSolariumBundle in your composer.json:
 
-    $ git clone git://github.com/nelmio/NelmioSolariumBundle.git vendor/bundles/Nelmio/SolariumBundle
+```js
+{
+    "require": {
+        "nelmio/solarium-bundle": "dev-master"
+    }
+}
+```
 
-Register the `Nelmio` namespace in your project's autoload script (app/autoload.php):
+Download bundle:
 
-    $loader->registerNamespaces(array(
-        'Nelmio'                        => __DIR__.'/../vendor/bundles',
-    ));
+``` bash
+$ php composer.phar update nelmio/solarium-bundle
+```
 
-Add the NelmioSolariumBundle to your application's kernel:
+Add the NelmioSolariumBundle to your AppKernel.php
 
     public function registerBundles()
     {
@@ -55,19 +35,32 @@ Add the NelmioSolariumBundle to your application's kernel:
         ...
     }
 
-You will also need the [solarium library](https://github.com/basdenooijer/solarium):
+## Basic configuration
 
-    $ git clone git://github.com/basdenooijer/solarium.git vendor/solarium
+Quick-start configuration:
 
-And the autoloader:
+    nelmio_solarium:
+        clients:
+            default: ~
 
-    $loader->registerPrefixes(array(
-        'Solarium_'        => __DIR__.'/../vendor/solarium/library',
-    ));
+Gives you Solarium_Client with default options (`http://localhost:8983/solr`)
+
+```php
+    $client = $this->get('solarium.client');
+```
+
+Configure your client:
+
+    nelmio_solarium:
+        clients:
+            default:
+                host: localhost
+                port: 8983
+                path: /solr
+                core: active
+                timeout: 5
 
 ## Usage
-
-In your Controllers you can access the Solarium instance using the `solarium.client` service, e.g.:
 
 ```php
         $client = $this->get('solarium.client');
@@ -76,15 +69,43 @@ In your Controllers you can access the Solarium instance using the `solarium.cli
         $results = $client->select($select);
 ```
 
-If you have defined a core, you can access it by config name like this :
+For more information see the [Solarium documentation](http://www.solarium-project.org/documentation/).
+
+## Multiple clients
+
+    nelmio_solarium:
+        clients:
+            default:
+                host: 192.168.1.2
+                
+            another:
+                host: 192.168.1.3
 
 ```php
-        $client = $this->get('solarium.client.cms');
+    $defaultClient = $this->get('solarium.client');
+    $anotherClient = $this->get('solarium.client.another');
 ```
 
-Then you can use `$results` in a `foreach` or twig `for` to display the results.
+You may also change `default` name with your own, but don't forget change `default_client` option if you want to get access to
+`solarium.client` service
 
-For more information see the [Solarium documentation](http://www.solarium-project.org/documentation/).
+    nelmio_solarium:
+        default_client: firstOne
+        clients:
+            firstOne:
+                host: 192.168.1.2
+                
+            anotherOne:
+                host: 192.168.1.3
+
+```php
+    $firstOneClient = $this->get('solarium.client');
+    //or
+    $firstOneClient = $this->get('solarium.client.firstOne');
+    
+    $anotherOneClient = $this->get('solarium.client.anotherOne');
+```
+
 
 ## License
 
