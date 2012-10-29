@@ -40,6 +40,11 @@ class NelmioSolariumExtension extends Extension
         }
 
         $default_client = $config['default_client'];
+        if (!count($config['clients'])) {
+            $config['clients'][$default_client] = array();
+        } elseif (count($config['clients']) === 1) {
+            $default_client = key($config['clients']);
+        }
 
         foreach ($config['clients'] as $name => $client_options) {
             $client_name = sprintf('solarium.client.%s', $name);
