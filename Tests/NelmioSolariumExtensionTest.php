@@ -29,7 +29,48 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $container = $this->createCompiledContainerForConfig($config);
 
         $this->assertInstanceOf('Solarium_Client', $container->get('solarium.client'));
-        $this->assertInstanceOf('Solarium_Client_Adapter_Http', $container->get('solarium.client')->getAdapter());
+
+        $adapter = $container->get('solarium.client')->getAdapter();
+        $this->assertInstanceOf('Solarium_Client_Adapter_Http', $adapter);
+        $this->assertEquals('127.0.0.1', $adapter->getHost());
+        $this->assertEquals('/solr', $adapter->getPath());
+        $this->assertEquals('8983', $adapter->getPort());
+        $this->assertEquals(5, $adapter->getTimeout());
+    }
+
+    public function testLoadDsnConfiguration()
+    {
+        $config = array(
+            'clients' => array(
+                'default' => array(
+                    'dsn' => 'http://somehost/solr2'
+                )
+            )
+        );
+
+        $container = $this->createCompiledContainerForConfig($config);
+
+        $adapter = $container->get('solarium.client')->getAdapter();
+
+        $this->assertEquals('somehost', $adapter->getHost());
+        $this->assertEquals('/solr2', $adapter->getPath());
+        $this->assertEquals('80', $adapter->getPort());
+
+        $config = array(
+            'clients' => array(
+                'default' => array(
+                    'dsn' => 'http://somehost:8080/solr/core_path/'
+                )
+            )
+        );
+
+        $container = $this->createCompiledContainerForConfig($config);
+
+        $adapter = $container->get('solarium.client')->getAdapter();
+
+        $this->assertEquals('somehost', $adapter->getHost());
+        $this->assertEquals('/solr/core_path', $adapter->getPath());
+        $this->assertEquals('8080', $adapter->getPort());
     }
 
     public function testLoadCustomAdapter()
