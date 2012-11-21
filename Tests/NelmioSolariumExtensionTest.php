@@ -127,6 +127,22 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client.client2'));
     }
 
+    public function testDsnAndHostParamsTogether()
+    {
+        $config = array(
+            'default_client' => 'client2',
+            'clients' => array(
+                'client1' => array(
+                    'dsn' => 'http://localhost:8983/path',
+                    'host' => 'localhost'
+                ),
+            ),
+        );
+
+        $this->setExpectedException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
+        $container = $this->createCompiledContainerForConfig($config);
+    }
+
     private function createCompiledContainerForConfig($config)
     {
         $container = $this->createContainer();
