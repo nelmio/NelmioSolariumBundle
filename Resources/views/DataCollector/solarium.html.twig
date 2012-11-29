@@ -40,8 +40,8 @@
     {% else %}
         <ul class="alt">
         {% for i, query in collector.queries %}
-            <li class="{{ cycle(['odd', 'even'], i) }}">
-                <h2>Request {{ loop.index }} (<a href="{{ query.base_uri }}{{ query.request.uri }}">{{ query.base_uri }}</a>)</a></h2>
+            <li>
+                <h2>Request {{ loop.index }} (<a href="{{ query.base_uri }}{{ query.request.uri }}">{{ query.base_uri }}</a>)</h2>
                 <div>
                     <h3>Params</h3>
                     {#
