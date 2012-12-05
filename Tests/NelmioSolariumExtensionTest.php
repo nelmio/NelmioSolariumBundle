@@ -127,20 +127,26 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client.client2'));
     }
 
-    public function testDsnAndHostParamsTogether()
+    public function testDsnAndOtherParamsTogether()
     {
         $config = array(
             'default_client' => 'client2',
             'clients' => array(
                 'client1' => array(
-                    'dsn' => 'http://localhost:8983/path',
-                    'host' => 'localhost'
+                    'dsn' => 'http://localhostBlahBlah/path',
+                    'host' => 'localhost',
+                    'port' => 123
                 ),
             ),
         );
 
-        $this->setExpectedException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
         $container = $this->createCompiledContainerForConfig($config);
+
+        $adapter = $container->get('solarium.client')->getAdapter();
+
+        $this->assertEquals('localhostBlahBlah', $adapter->getHost());
+        $this->assertEquals('/path', $adapter->getPath());
+        $this->assertEquals('80', $adapter->getPort());
     }
 
     private function createCompiledContainerForConfig($config)

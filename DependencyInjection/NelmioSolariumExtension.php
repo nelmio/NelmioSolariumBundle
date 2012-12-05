@@ -71,20 +71,6 @@ class NelmioSolariumExtension extends Extension
                 $container->setAlias('solarium.client', $client_name);
             }
 
-            if (isset($client_options['dsn'])) {
-                $parsed_dsn = parse_url($client_options['dsn']);
-
-                //@todo: what to do if dsn isn't wellformed? exception?
-                if ($parsed_dsn !== false) {
-                    if (isset($parsed_dsn['host'])) {
-                        $client_options['host'] = $parsed_dsn['host'];
-                    }
-
-                    $client_options['port'] = isset($parsed_dsn['port']) ? $parsed_dsn['port'] : 80;
-                    $client_options['path'] = isset($parsed_dsn['path']) ? $parsed_dsn['path'] : '';
-                }
-            }
-
             $container
                 ->setDefinition($adapter_name, new Definition($adapter_class))
                 ->setArguments(array($client_options));
