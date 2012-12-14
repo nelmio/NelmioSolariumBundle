@@ -62,6 +62,16 @@ nelmio_solarium:
             timeout: 5
 ```
 
+Or with dsn:
+
+```yaml
+nelmio_solarium:
+    clients:
+        default:
+            dsn: http://localhost:8983/solr/active
+            timeout: 5
+```
+
 ## Usage
 
 ```php
