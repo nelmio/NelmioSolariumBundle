@@ -62,6 +62,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('host')->defaultValue('127.0.0.1')->end()
                             ->scalarNode('port')->defaultValue(8983)->end()
                             ->scalarNode('path')->defaultValue('/solr')->end()
+                            ->scalarNode('core')->end()
                             ->scalarNode('timeout')->defaultValue(5)->end()
                         ->end()
                     ->end()
