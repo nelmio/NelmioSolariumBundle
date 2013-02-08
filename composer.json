@@ -16,7 +16,7 @@
     ],
     "require": {
         "symfony/framework-bundle": "2.*",
-        "solarium/solarium": "~2.4.0"
+        "solarium/solarium": "3.0.*"
     },
     "require-dev": {
         "symfony/yaml": "2.*"
