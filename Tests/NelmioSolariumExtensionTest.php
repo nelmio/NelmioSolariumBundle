@@ -13,7 +13,6 @@ namespace Nelmio\SolariumBundle\Tests;
 
 use Nelmio\SolariumBundle\DependencyInjection\NelmioSolariumExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase

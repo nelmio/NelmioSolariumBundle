@@ -13,9 +13,6 @@ namespace Nelmio\SolariumBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\BooleanNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\ScalarNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
@@ -52,6 +49,7 @@ class Configuration implements ConfigurationInterface
                                     $v['port'] = isset($parsed_dsn['port']) ? $parsed_dsn['port'] : 80;
                                     $v['path'] = isset($parsed_dsn['path']) ? $parsed_dsn['path'] : '';
                                 }
+
                                 return $v;
                             })
                         ->end()
