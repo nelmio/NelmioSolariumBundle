@@ -1,10 +1,10 @@
 <?php
 namespace Nelmio\SolariumBundle;
 
-use Solarium_Client_Request;
-use Solarium_Client_Response;
+use Solarium\Core\Client\Request as SolariumRequest;
+use Solarium\Core\Client\Response as SolariumResponse;
 
 interface LoggerInterface
 {
-    public function log(Solarium_Client_Request $request, Solarium_Client_Response $response, $duration);
+    public function log(SolariumRequest $request, SolariumResponse $response, $duration);
 }

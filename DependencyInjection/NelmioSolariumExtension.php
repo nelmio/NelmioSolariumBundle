@@ -18,7 +18,6 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
@@ -54,14 +53,14 @@ class NelmioSolariumExtension extends Extension
                 $client_class = $client_options['client_class'];
                 unset($client_options['client_class']);
             } else {
-                $client_class = 'Solarium_Client';
+                $client_class = 'Solarium\Client';
             }
 
             if (isset($client_options['adapter_class'])) {
                 $adapter_class = $client_options['adapter_class'];
                 unset($client_options['adapter_class']);
             } else {
-                $adapter_class = 'Solarium_Client_Adapter_Http';
+                $adapter_class = 'Solarium\Core\Client\Adapter\Http';
             }
 
             $clientDefinition = new Definition($client_class);

@@ -13,9 +13,6 @@ namespace Nelmio\SolariumBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\BooleanNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\ScalarNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
@@ -52,13 +49,14 @@ class Configuration implements ConfigurationInterface
                                     $v['port'] = isset($parsed_dsn['port']) ? $parsed_dsn['port'] : 80;
                                     $v['path'] = isset($parsed_dsn['path']) ? $parsed_dsn['path'] : '';
                                 }
+
                                 return $v;
                             })
                         ->end()
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('client_class')->cannotBeEmpty()->defaultValue('Solarium_Client')->end()
-                            ->scalarNode('adapter_class')->cannotBeEmpty()->defaultValue('Solarium_Client_Adapter_Http')->end()
+                            ->scalarNode('client_class')->cannotBeEmpty()->defaultValue('Solarium\Client')->end()
+                            ->scalarNode('adapter_class')->cannotBeEmpty()->defaultValue('Solarium\Core\Client\Adapter\Http')->end()
                             ->scalarNode('host')->defaultValue('127.0.0.1')->end()
                             ->scalarNode('port')->defaultValue(8983)->end()
                             ->scalarNode('path')->defaultValue('/solr')->end()
