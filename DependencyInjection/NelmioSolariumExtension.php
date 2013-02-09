@@ -53,14 +53,14 @@ class NelmioSolariumExtension extends Extension
                 $client_class = $client_options['client_class'];
                 unset($client_options['client_class']);
             } else {
-                $client_class = '\Solarium\Client';
+                $client_class = 'Solarium\Client';
             }
 
             if (isset($client_options['adapter_class'])) {
                 $adapter_class = $client_options['adapter_class'];
                 unset($client_options['adapter_class']);
             } else {
-                $adapter_class = '\Solarium\Core\Client\Adapter\Http';
+                $adapter_class = 'Solarium\Core\Client\Adapter\Http';
             }
 
             $clientDefinition = new Definition($client_class);
