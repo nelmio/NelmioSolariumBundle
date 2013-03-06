@@ -2,14 +2,14 @@
 
 namespace Nelmio\SolariumBundle;
 
-use Solarium_Client_Request as SolariumRequest;
-use Solarium_Client_Response as SolariumResponse;
-use Solarium_Plugin_Abstract;
+use Solarium\Core\Client\Request as SolariumRequest;
+use Solarium\Core\Client\Response as SolariumResponse;
+use Solarium\Core\Plugin\Plugin as SolariumPlugin;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
 
-class Logger extends Solarium_Plugin_Abstract implements DataCollectorInterface
+class Logger extends SolariumPlugin implements DataCollectorInterface
 {
     private $queries = array();
     private $currentRequest = null;
