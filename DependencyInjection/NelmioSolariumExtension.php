@@ -48,6 +48,7 @@ class NelmioSolariumExtension extends Extension
         foreach ($config['clients'] as $name => $client_options) {
             $client_name = sprintf('solarium.client.%s', $name);
             $adapter_name = sprintf('solarium.client.adapter.%s', $name);
+            $endpoint_name = sprintf('solarium.client.endpoint.%s', $name);
 
             if (isset($client_options['client_class'])) {
                 $client_class = $client_options['client_class'];
@@ -63,6 +64,8 @@ class NelmioSolariumExtension extends Extension
                 $adapter_class = 'Solarium\Core\Client\Adapter\Http';
             }
 
+
+
             $clientDefinition = new Definition($client_class);
             $container->setDefinition($client_name, $clientDefinition);
 
@@ -71,9 +74,16 @@ class NelmioSolariumExtension extends Extension
             }
 
             $container
-                ->setDefinition($adapter_name, new Definition($adapter_class))
-                ->setArguments(array($client_options));
+                ->setDefinition($endpoint_name, new Definition('Solarium\Core\Client\Endpoint'))
+                ->setArguments(array($client_options))
+                ->addMethodCall('setKey', array($endpoint_name));
 
+            $container
+                ->getDefinition($client_name)
+                ->addMethodCall('clearEndpoints')
+                ->addMethodCall('addEndpoint', array(new Reference($endpoint_name)));
+
+            $container->setDefinition($adapter_name, new Definition($adapter_class));
             $adapter = new Reference($adapter_name);
             $container->getDefinition($client_name)->addMethodCall('setAdapter', array($adapter));
 
