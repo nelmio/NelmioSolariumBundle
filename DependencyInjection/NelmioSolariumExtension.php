@@ -31,55 +31,76 @@ class NelmioSolariumExtension extends Extension
         $config        = $processor->processConfiguration($configuration, $configs);
 
         if ($container->getParameter('kernel.debug') === true) {
-            $is_debug = true;
+            $isDebug = true;
             $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('logger.xml');
         } else {
-            $is_debug = false;
+            $isDebug = false;
         }
 
-        $default_client = $config['default_client'];
+        $defaultClient = $config['default_client'];
         if (!count($config['clients'])) {
-            $config['clients'][$default_client] = array();
+            $config['clients'][$defaultClient] = array();
         } elseif (count($config['clients']) === 1) {
-            $default_client = key($config['clients']);
+            $defaultClient = key($config['clients']);
         }
 
-        foreach ($config['clients'] as $name => $client_options) {
-            $client_name = sprintf('solarium.client.%s', $name);
-            $adapter_name = sprintf('solarium.client.adapter.%s', $name);
-
-            if (isset($client_options['client_class'])) {
-                $client_class = $client_options['client_class'];
-                unset($client_options['client_class']);
-            } else {
-                $client_class = 'Solarium\Client';
-            }
-
-            if (isset($client_options['adapter_class'])) {
-                $adapter_class = $client_options['adapter_class'];
-                unset($client_options['adapter_class']);
-            } else {
-                $adapter_class = 'Solarium\Core\Client\Adapter\Http';
-            }
-
-            $clientDefinition = new Definition($client_class);
-            $container->setDefinition($client_name, $clientDefinition);
-
-            if ($name == $default_client) {
-                $container->setAlias('solarium.client', $client_name);
-            }
-
+        $endpointReferences = array();
+        foreach ($config['endpoints'] as $name => $endpointOptions) {
+            $endpointName = sprintf('solarium.client.endpoint.%s', $name);
+            $endpointOptions['key'] = $name;
             $container
-                ->setDefinition($adapter_name, new Definition($adapter_class))
-                ->setArguments(array($client_options));
+                ->setDefinition($endpointName, new Definition('Solarium\Core\Client\Endpoint'))
+                ->setArguments(array($endpointOptions));
+            $endpointReferences[$name] = new Reference($endpointName);
+        }
 
-            $adapter = new Reference($adapter_name);
-            $container->getDefinition($client_name)->addMethodCall('setAdapter', array($adapter));
+        foreach ($config['clients'] as $name => $clientOptions) {
+            $clientName = sprintf('solarium.client.%s', $name);
 
-            if ($is_debug) {
+            if (isset($clientOptions['client_class'])) {
+                $clientClass = $clientOptions['client_class'];
+                unset($clientOptions['client_class']);
+            } else {
+                $clientClass = 'Solarium\Client';
+            }
+            $clientDefinition = new Definition($clientClass);
+            $container->setDefinition($clientName, $clientDefinition);
+
+            if ($name == $defaultClient) {
+                $container->setAlias('solarium.client', $clientName);
+            }
+
+            //If some specific endpoints are given
+            if ($endpointReferences) {
+                if (isset($clientOptions['endpoints']) && !empty($clientOptions['endpoints'])) {
+                    $endpoints = array();
+                    foreach ($clientOptions['endpoints'] as $endpointName) {
+                        if (isset($endpointReferences[$endpointName])) {
+                            $endpoints[] = $endpointReferences[$endpointName];
+                        }
+                    }
+                } else {
+                    $endpoints = $endpointReferences;
+                }
+                $clientDefinition->setArguments(array(array(
+                    'endpoint' => $endpoints,
+                )));
+            }
+
+            //Default endpoint
+            if (isset($clientOptions['default_endpoint']) && isset($endpointReferences[$clientOptions['default_endpoint']])) {
+                $clientDefinition->addMethodCall('setDefaultEndpoint', array($clientOptions['default_endpoint']));
+            }
+
+            //Add the optional adapter class
+            if (isset($clientOptions['adapter_class'])) {
+                $clientDefinition->addMethodCall('setAdapter', array($clientOptions['adapter_class']));
+            }
+
+            if ($isDebug) {
                 $logger = new Reference('solarium.data_collector');
-                $container->getDefinition($client_name)->addMethodCall('registerPlugin', array($client_name . '.logger', $logger));
+                $container->getDefinition($clientName)->addMethodCall('registerPlugin', array($clientName . '.logger', $logger));
             }
         }
     }
