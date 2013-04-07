@@ -1,3 +1,7 @@
+## 2.0.1 (2013-04-07)
+
+  * Fix bug in Monolog support with Symfony 2.1
+
 ## 2.0.0 (2013-03-27)
 
   * Migrated to Solarium 3.x, use the 1.x version of this bundle if you want to keep using Solarium 2.x
