@@ -12,7 +12,6 @@ use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 class Logger extends SolariumPlugin implements DataCollectorInterface
 {
@@ -50,7 +49,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface
      *
      * @param Stopwatch $stopwatch
      */
-    public function setStopwatch(Stopwatch $stopwatch)
+    public function setStopwatch($stopwatch)
     {
         $this->stopwatch = $stopwatch;
     }
