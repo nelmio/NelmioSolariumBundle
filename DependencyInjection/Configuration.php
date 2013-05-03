@@ -45,6 +45,10 @@ class Configuration implements ConfigurationInterface
                                     if (isset($parsed_dsn['host'])) {
                                         $v['host'] = $parsed_dsn['host'];
                                     }
+                                    if (isset($parsed_dsn['user'])) {
+                                        $auth = $parsed_dsn['user'] . (isset($parsed_dsn['pass']) ? ':' . $parsed_dsn['pass'] : '');
+                                        $v['host'] = $auth . '@' . $v['host'];
+                                    }
 
                                     $v['port'] = isset($parsed_dsn['port']) ? $parsed_dsn['port'] : 80;
                                     $v['path'] = isset($parsed_dsn['path']) ? $parsed_dsn['path'] : '';
