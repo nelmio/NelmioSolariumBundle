@@ -1,3 +1,8 @@
+## 2.0.2 (2013-05-03)
+
+  * Fixed bug in Symfony 2.1 / 2.2 support
+  * Added support for user:pass@host in dsn configuration
+
 ## 2.0.1 (2013-04-07)
 
   * Fix bug in Monolog support with Symfony 2.1
