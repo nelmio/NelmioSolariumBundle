@@ -13,8 +13,9 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
 
-class Logger extends SolariumPlugin implements DataCollectorInterface
+class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializable
 {
+    private $data = array();
     private $queries = array();
     private $currentRequest = null;
     private $currentStartTime = null;
@@ -133,5 +134,15 @@ class Logger extends SolariumPlugin implements DataCollectorInterface
 
         $this->currentRequest = null;
         $this->currentStartTime = null;
+    }
+
+    public function serialize()
+    {
+        return serialize($this->data);
+    }
+
+    public function unserialize($data)
+    {
+        $this->data = unserialize($data);
     }
 }
