@@ -1,3 +1,7 @@
+## 2.0.3 (2013-05-22)
+
+  * Fixed bug in Symfony Profiler support
+
 ## 2.0.2 (2013-05-03)
 
   * Fixed bug in Symfony 2.1 / 2.2 support
