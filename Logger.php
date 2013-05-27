@@ -61,7 +61,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
             'request' => $request,
             'response' => $response,
             'duration' => $duration,
-            'base_uri' => $endpoint->getBaseUri() . $request->getUri(),
+            'base_uri' => $endpoint->getBaseUri(),
         );
     }
 
