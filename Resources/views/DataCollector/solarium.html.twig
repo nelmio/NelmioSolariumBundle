@@ -44,13 +44,6 @@
                 <h2>Request {{ loop.index }} (<a href="{{ query.base_uri }}{{ query.request.uri }}">{{ query.request.uri }}</a>)</h2>
                 <div>
                     <h3>Params</h3>
-                    {#
-                    <code>
-                        {{ query.request.uri }}
-                        <br/>
-                        {{ query.request.rawdata }}
-                    </code>
-                    #}
                     <table style="width:45%">
                         <thead>
                             <tr>
@@ -74,8 +67,12 @@
 
                     <h3>Response</h3>
                     <code>
-                        HTTP-Result: {{ query.response.statuscode }} ({{ '%0.4f'|format(query.duration) }} ms)<br/>
-                        {{ query.response.body }}
+                        {% if query.response %}
+                            HTTP-Result: {{ query.response.statuscode }} ({{ '%0.4f'|format(query.duration) }} ms)<br/>
+                            {{ query.response.body }}
+                        {% else %}
+                            Request failed, no response logged
+                        {% endif %}
                     </code>
                 </div>
             </li>

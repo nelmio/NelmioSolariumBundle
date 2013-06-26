@@ -17,8 +17,9 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
 {
     private $data = array();
     private $queries = array();
-    private $currentRequest = null;
-    private $currentStartTime = null;
+    private $currentRequest;
+    private $currentStartTime;
+    private $currentEndpoint;
 
     private $logger;
     private $stopwatch;
@@ -55,7 +56,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         $this->stopwatch = $stopwatch;
     }
 
-    public function log(SolariumRequest $request, SolariumResponse $response, SolariumEndpoint $endpoint, $duration)
+    public function log(SolariumRequest $request, $response, SolariumEndpoint $endpoint, $duration)
     {
         $this->queries[] = array(
             'request' => $request,
@@ -67,6 +68,10 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
 
     public function collect(HttpRequest $request, HttpResponse $response, \Exception $exception = null)
     {
+        if (isset($this->currentRequest)) {
+            $this->failCurrentRequest();
+        }
+
         $time = 0;
         foreach ($this->queries as $queryStruct) {
             $time += $queryStruct['duration'];
@@ -100,8 +105,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
     public function preExecuteRequest(SolariumPreExecuteRequestEvent $event)
     {
         if (isset($this->currentRequest)) {
-            // mop: hmmm not sure what happens when an exception is thrown :S lets be restrictive for the moment
-            throw new \RuntimeException('Request already set');
+            $this->failCurrentRequest();
         }
 
         if (null !== $this->stopwatch) {
@@ -109,6 +113,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         }
 
         $this->currentRequest = $event->getRequest();
+        $this->currentEndpoint = $event->getEndpoint();
 
         if (null !== $this->logger) {
             $this->logger->debug($event->getEndpoint()->getBaseUri() . $this->currentRequest->getUri());
@@ -134,6 +139,22 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
 
         $this->currentRequest = null;
         $this->currentStartTime = null;
+        $this->currentEndpoint = null;
+    }
+
+    public function failCurrentRequest()
+    {
+        $endTime = microtime(true) - $this->currentStartTime;
+
+        if (null !== $this->stopwatch) {
+            $this->stopwatch->stop('solr');
+        }
+
+        $this->log($this->currentRequest, null, $this->currentEndpoint, $endTime);
+
+        $this->currentRequest = null;
+        $this->currentStartTime = null;
+        $this->currentEndpoint = null;
     }
 
     public function serialize()
