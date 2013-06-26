@@ -1,3 +1,8 @@
+## 2.0.4 (2013-06-26)
+
+  * Fixed issue when a solr request was issued after one that failed
+  * Fixed links in the Symfony Profiler
+
 ## 2.0.3 (2013-05-22)
 
   * Fixed bug in Symfony Profiler support
