@@ -88,6 +88,25 @@ class NelmioSolariumExtension extends Extension
                 )));
             }
 
+            if (isset($clientOptions['load_balancer']) && $clientOptions['load_balancer']['enabled']) {
+                $loadBalancerDefinition = new Definition('Solarium\Plugin\Loadbalancer\Loadbalancer');
+                $loadBalancerDefinition
+                    ->addMethodCall('addEndpoints', array($clientOptions['load_balancer']['endpoints']))
+                ;
+                if (isset($clientOptions['load_balancer']['blocked_query_types'])) {
+                    $loadBalancerDefinition
+                        ->addMethodCall('setBlockedQueryTypes', array($clientOptions['load_balancer']['blocked_query_types']))
+                    ;
+                }
+
+                $loadBalancerName = $clientName . '.load_balancer';
+                $container->setDefinition($loadBalancerName, $loadBalancerDefinition);
+
+                $clientDefinition
+                    ->addMethodCall('registerPlugin', array('loadbalancer', new Reference($loadBalancerName)))
+                ;
+            }
+
             //Default endpoint
             if (isset($clientOptions['default_endpoint']) && isset($endpointReferences[$clientOptions['default_endpoint']])) {
                 $clientDefinition->addMethodCall('setDefaultEndpoint', array($clientOptions['default_endpoint']));
