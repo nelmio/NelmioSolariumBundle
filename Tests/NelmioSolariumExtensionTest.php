@@ -332,6 +332,62 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('postExecuteRequest', $postExecuteListeners[0][1]);
     }
 
+    public function testLoadBalancer()
+    {
+        $config = array(
+            'endpoints' => array(
+                'master' => array(
+                    'host' => 'localhost',
+                    'port' => 123,
+                ),
+                'slave1' => array(
+                    'host' => 'localhost',
+                    'port' => 124,
+                ),
+                'slave2' => array(
+                    'host' => 'localhost',
+                    'port' => 125,
+                )
+            ),
+            'clients' => array(
+                'client1' => array(
+                    'endpoints' => ['master'],
+                    'load_balancer' => array(
+                        'endpoints' => array('slave1', 'slave2' => 5),
+                        'blocked_query_types' => array('ping'),
+                    ),
+                )
+            ),
+        );
+
+        $container = $this->createCompiledContainerForConfig($config);
+
+        $client = $container->get('solarium.client');
+
+        $endpoints = $client->getEndpoints();
+
+        $this->assertCount(1, $endpoints);
+        $this->assertEquals('localhost', $endpoints['master']->getHost());
+        $this->assertEquals(123, $endpoints['master']->getPort());
+
+        $clientPlugins = $client->getPlugins();
+        $this->assertArrayHasKey('loadbalancer', $clientPlugins);
+
+        $loadBalancerPlugin = $client->getPlugin('loadbalancer');
+        $this->assertEquals($loadBalancerPlugin, $container->get('solarium.client.client1.load_balancer'));
+
+        $loadBalancedEndpoints = $loadBalancerPlugin->getEndpoints();
+        $this->assertCount(2, $loadBalancedEndpoints);
+        $this->assertEquals(
+            array(
+                'slave1' => 1,
+                'slave2' => 5,
+            ),
+            $loadBalancedEndpoints
+        );
+
+    }
+
     private function createCompiledContainerForConfig($config, $debug = false)
     {
         $container = $this->createContainer($debug);

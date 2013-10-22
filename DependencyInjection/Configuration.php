@@ -11,6 +11,7 @@
 
 namespace Nelmio\SolariumBundle\DependencyInjection;
 
+use Solarium\Client;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -78,11 +79,49 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('endpoints')
                                 ->beforeNormalization()
                                     ->ifString()
-                                    ->then(function($v) { return preg_split('/\s*,\s*/', $v); })
+                                    ->then($this->getNormalizeListToArrayClosure())
                                 ->end()
                                 ->prototype('scalar')->end()
                             ->end()
                             ->scalarNode('default_endpoint')->end()
+                            ->arrayNode('load_balancer')
+                                ->canBeEnabled()
+                                ->children()
+                                    ->arrayNode('endpoints')
+                                        ->requiresAtLeastOneElement()
+                                        ->beforeNormalization()
+                                            ->ifString()
+                                            ->then($this->getNormalizeListToArrayClosure())
+                                        ->end()
+                                        ->beforeNormalization()
+                                            ->always(function (array $endpoints) {
+                                                // the values should be the weight and the keys the endpoints name
+                                                // handle the case where people just list the endpoints like [endpoint1, endpoint2]
+                                                $normalizedEndpoints = array();
+                                                foreach ($endpoints as $name => $weight) {
+                                                    if (!is_string($name)) {
+                                                        $name = $weight;
+                                                        $weight = 1;
+                                                    }
+
+                                                    $normalizedEndpoints[$name] = $weight;
+                                                }
+
+                                                return $normalizedEndpoints;
+                                            })
+                                        ->end()
+                                        ->prototype('scalar')->end()
+                                    ->end()
+                                    ->arrayNode('blocked_query_types')
+                                        ->defaultValue(array(Client::QUERY_UPDATE))
+                                        ->beforeNormalization()
+                                            ->ifString()
+                                            ->then($this->getNormalizeListToArrayClosure())
+                                        ->end()
+                                        ->prototype('scalar')->end()
+                                    ->end()
+                                ->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
@@ -90,5 +129,12 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $treeBuilder;
+    }
+
+    public function getNormalizeListToArrayClosure()
+    {
+        return function ($endpointList) {
+            return preg_split('/\s*,\s*/', $endpointList);
+        };
     }
 }
