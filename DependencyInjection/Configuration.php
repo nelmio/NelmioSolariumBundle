@@ -85,8 +85,20 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->scalarNode('default_endpoint')->end()
                             ->arrayNode('load_balancer')
-                                ->canBeEnabled()
+                                ->addDefaultsIfNotSet()
+                                ->treatFalseLike(array('enabled' => false))
+                                ->treatTrueLike(array('enabled' => true))
+                                ->treatNullLike(array('enabled' => true))
+                                ->beforeNormalization()
+                                    ->ifArray()
+                                    ->then(function($v) {
+                                        $v['enabled'] = isset($v['enabled']) ? $v['enabled'] : true;
+
+                                        return $v;
+                                    })
+                                ->end()
                                 ->children()
+                                    ->booleanNode('enabled')->defaultFalse()->end()
                                     ->arrayNode('endpoints')
                                         ->requiresAtLeastOneElement()
                                         ->beforeNormalization()
