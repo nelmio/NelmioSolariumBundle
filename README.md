@@ -202,6 +202,18 @@ nelmio_solarium:
             adapter_class: Solarium\Client\Adapter\Http
 ```
 
+## Loading Fixtures
+
+There is a command to load fixtures:
+
+```bash
+$ app/console nelmio:solarium:fixtures --append
+```
+
+The command is modeled after the DoctrineDataFixture Bundle's command. The command expects the data fixtures to
+be in the `AcmeBundle/DataFixtures/Solarium` directory. Every fixture has to implement the
+`Solarium\Support\DataFixtures\FixtureInterface` interface.
+
 ## License
 
 Released under the MIT License, see LICENSE.
