@@ -55,7 +55,7 @@
                     {% for key, value in query.request.params %}
                             <tr>
                                 <td><b>{{ key }}</b></td>
-                                {% if value|keys %}
+                                {% if value is iterable %}
                                 <td>{{ value|join('<br />')|raw }}</td>
                                 {% else %}
                                 <td>{{ value }}</td>
