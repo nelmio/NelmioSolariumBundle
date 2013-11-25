@@ -68,7 +68,7 @@
                     <h3>Response</h3>
                     <code>
                         {% if query.response %}
-                            HTTP-Result: {{ query.response.statuscode }} ({{ '%0.4f'|format(query.duration) }} ms)<br/>
+                            HTTP-Result: {{ query.response.statuscode }} ({{ '%0.2f'|format(query.duration * 1000) }} ms)<br/>
                             {{ query.response.body }}
                         {% else %}
                             Request failed, no response logged
