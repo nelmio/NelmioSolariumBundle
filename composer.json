@@ -16,7 +16,7 @@
     ],
     "require": {
         "symfony/framework-bundle": "~2.1",
-        "solarium/solarium": "dev-develop"
+        "solarium/solarium": "~3.0"
     },
     "autoload": {
         "psr-0": { "Nelmio\\SolariumBundle": "" }
