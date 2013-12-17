@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * @author Baldur Rensch <brensch@gmail.com>
@@ -63,7 +64,15 @@ class LoadFixturesCommand extends ContainerAwareCommand
 
         /** @var $executor \Solarium\Support\DataFixtures\Executor */
         $executor = $this->getContainer()->get('solarium.fixtures.executor.default');
-        $executor->execute($loader->getFixtures());
+
+        $fixtures = $loader->getFixtures();
+        foreach ($fixtures as $fixture) {
+            if ($fixture instanceof ContainerAwareInterface) {
+                $fixture->setContainer($this->getContainer());
+            }
+        }
+
+        $executor->execute($fixtures);
     }
 } 
 
