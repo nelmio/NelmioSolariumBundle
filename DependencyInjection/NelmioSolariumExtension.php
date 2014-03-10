@@ -30,9 +30,11 @@ class NelmioSolariumExtension extends Extension
         $configuration = new Configuration();
         $config        = $processor->processConfiguration($configuration, $configs);
 
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('registry.xml');
+
         if ($container->getParameter('kernel.debug') === true) {
             $isDebug = true;
-            $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('logger.xml');
         } else {
             $isDebug = false;
@@ -55,6 +57,7 @@ class NelmioSolariumExtension extends Extension
             $endpointReferences[$name] = new Reference($endpointName);
         }
 
+        $clients = array();
         foreach ($config['clients'] as $name => $clientOptions) {
             $clientName = sprintf('solarium.client.%s', $name);
 
@@ -65,6 +68,8 @@ class NelmioSolariumExtension extends Extension
                 $clientClass = 'Solarium\Client';
             }
             $clientDefinition = new Definition($clientClass);
+            $clients[$name] = new Reference($clientName);
+
             $container->setDefinition($clientName, $clientDefinition);
 
             if ($name == $defaultClient) {
@@ -122,5 +127,13 @@ class NelmioSolariumExtension extends Extension
                 $container->getDefinition($clientName)->addMethodCall('registerPlugin', array($clientName . '.logger', $logger));
             }
         }
+
+        // configure registry
+        $registry = $container->getDefinition('solarium.client_registry');
+        $registry->replaceArgument(0, $clients);
+        if (in_array($defaultClient, array_keys($clients))) {
+            $registry->replaceArgument(1, $defaultClient);
+        }
+
     }
 }
