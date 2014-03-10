@@ -189,6 +189,22 @@ nelmio_solarium:
             default_endpoint: three
 ```
 
+## Client registry
+
+You can also use the service ```solarium.client_registry``` to access the clients you have configured using the names you have used in the configuration (with the example above):
+
+```php
+    $registry = $this->get('solarium.client_registry');
+    $firstOne = $registry->getClient('firstOne');
+    $secondOne = $registry->getClient('secondOne');
+```
+
+or if you have configured a default client
+
+```php
+    $registry = $this->get('solarium.client_registry');
+    $default = $registry->getClient();
+```
 
 ## Overriding Classes
 

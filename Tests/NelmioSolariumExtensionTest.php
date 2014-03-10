@@ -312,6 +312,40 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('core2', $endpoints['endpoint2']->getOption('core'));
     }
 
+    public function testClientRegistry()
+    {
+        $config = array(
+            'endpoints' => array(
+                'endpoint1' => array(
+                    'host' => 'localhost',
+                    'port' => 123,
+                    'core' => 'core1',
+                ),
+                'endpoint2' => array(
+                    'host' => 'localhost',
+                    'port' => 123,
+                    'core' => 'core2',
+                )
+            ),
+            'clients' => array(
+                'client1' => array(
+                    'endpoints' => array('endpoint1'),
+                ),
+                'client2' => array(
+                    'endpoints' => array('endpoint2'),
+                )
+            ),
+        );
+        $container = $this->createCompiledContainerForConfig($config);
+        $clientRegistry = $container->get('solarium.client_registry');
+        $this->assertInstanceOf('Nelmio\SolariumBundle\ClientRegistry', $clientRegistry);
+        $this->assertInstanceOf('Solarium\Client', $clientRegistry->getClient('client1'));
+        $this->assertEquals(array('client1', 'client2'), $clientRegistry->getClientNames());
+
+        $this->setExpectedException('InvalidArgumentException');
+        $this->assertNotNull($clientRegistry->getClient());
+    }
+
     public function testLogger()
     {
         $config = array();
