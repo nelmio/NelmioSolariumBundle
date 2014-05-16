@@ -198,8 +198,8 @@ To change the adapter or client classes, you can set the client_class and adapte
 nelmio_solarium:
     clients:
         default:
-            client_class: Solarium\Client
-            adapter_class: Solarium\Client\Adapter\Http
+            client_class: Solarium\Core\Client
+            adapter_class: Solarium\Core\Client\Adapter\Http
 ```
 
 ## License
