@@ -30,13 +30,16 @@ class NelmioSolariumExtension extends Extension
         $configuration = new Configuration();
         $config        = $processor->processConfiguration($configuration, $configs);
 
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+
         if ($container->getParameter('kernel.debug') === true) {
             $isDebug = true;
-            $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('logger.xml');
         } else {
             $isDebug = false;
         }
+
+        $loader->load('fixtures.xml');
 
         $defaultClient = $config['default_client'];
         if (!count($config['clients'])) {
@@ -121,6 +124,16 @@ class NelmioSolariumExtension extends Extension
                 $logger = new Reference('solarium.data_collector');
                 $container->getDefinition($clientName)->addMethodCall('registerPlugin', array($clientName . '.logger', $logger));
             }
+
+            // Add the Solarium Fixtures Executor
+            $executorDefinition = new Definition('Solarium\Support\DataFixtures\Executor', array($clientDefinition));
+            $executorName = sprintf('solarium.fixtures.executor.%s', $name);
+            $container->setDefinition($executorName, $executorDefinition);
+
+            // Add the Solarium Fixtures Purger
+            $purgerDefinition = new Definition('Solarium\Support\DataFixtures\Purger', array($clientDefinition));
+            $purgerName = sprintf('solarium.fixtures.purger.%s', $name);
+            $container->setDefinition($purgerName, $purgerDefinition);
         }
     }
 }

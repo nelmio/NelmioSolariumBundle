@@ -385,7 +385,41 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
             ),
             $loadBalancedEndpoints
         );
+    }
 
+    public function testDataFixtures()
+    {
+        $config = array(
+            'endpoints' => array(
+                'endpoint1' => array(
+                    'host' => 'localhost',
+                    'port' => 123,
+                    'core' => 'core1',
+                ),
+                'endpoint2' => array(
+                    'host' => 'localhost',
+                    'port' => 123,
+                    'core' => 'core2',
+                )
+            ),
+            'clients' => array(
+                'client1' => array(
+                    'endpoints' => array('endpoint2'),
+                ),
+                'client2' => array(
+                    'endpoints' => array('endpoint1'),
+                )
+            ),
+        );
+
+        $container = $this->createCompiledContainerForConfig($config);
+
+        foreach (array_keys($config['clients']) as $client) {
+            $this->assertInstanceOf('Solarium\Support\DataFixtures\Executor', $container->get('solarium.fixtures.executor.' . $client));
+            $this->assertInstanceOf('Solarium\Support\DataFixtures\Purger', $container->get('solarium.fixtures.purger.' . $client));
+        }
+
+        $this->assertInstanceOf('Solarium\Support\DataFixtures\Loader', $container->get('solarium.fixtures.loader'));
     }
 
     private function createCompiledContainerForConfig($config, $debug = false)
