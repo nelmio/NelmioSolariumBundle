@@ -19,12 +19,11 @@
         "solarium/solarium": "~3.0"
     },
     "autoload": {
-        "psr-0": { "Nelmio\\SolariumBundle": "" }
+        "psr-4": { "Nelmio\\SolariumBundle\\": "" }
     },
-    "target-dir": "Nelmio/SolariumBundle",
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0-dev"
+            "dev-master": "2.1-dev"
         }
     }
 }
