@@ -1,3 +1,9 @@
+## 2.1.0 (2014-10-21)
+
+  * Added client load balance config support
+  * Added a ClientRegistry class
+  * Fixed DataCollector / Profiler support
+
 ## 2.0.4 (2013-06-26)
 
   * Fixed issue when a solr request was issued after one that failed
