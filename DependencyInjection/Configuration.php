@@ -43,6 +43,8 @@ class Configuration implements ConfigurationInterface
                                 $parsed_dsn = parse_url($v['dsn']);
                                 unset($v['dsn']);
                                 if ($parsed_dsn) {
+                                    $v['scheme'] = isset($parsed_dsn['scheme']) ? $parsed_dsn['scheme'] : 'http';
+
                                     if (isset($parsed_dsn['host'])) {
                                         $v['host'] = $parsed_dsn['host'];
                                     }
@@ -60,6 +62,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->addDefaultsIfNotSet()
                         ->children()
+                            ->scalarNode('scheme')->defaultValue('http')->end()
                             ->scalarNode('host')->defaultValue('127.0.0.1')->end()
                             ->scalarNode('port')->defaultValue(8983)->end()
                             ->scalarNode('path')->defaultValue('/solr')->end()
