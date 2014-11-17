@@ -43,6 +43,7 @@ Configure your endpoints:
 nelmio_solarium:
     endpoints:
         default:
+            scheme: http
             host: localhost
             port: 8983
             path: /solr
