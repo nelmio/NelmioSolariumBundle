@@ -37,7 +37,7 @@ Gives you a Solarium_Client service with default options (`http://localhost:8983
     $client = $this->get('solarium.client');
 ```
 
-Configure your endpoints:
+Configure your endpoints in config.yml:
 
 ```yaml
 nelmio_solarium:
