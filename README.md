@@ -9,19 +9,23 @@ solr client.
 
 Require the `nelmio/solarium-bundle` package in your composer.json and update your dependencies.
 
-    $ composer require nelmio/solarium-bundle
+```sh
+$ composer require nelmio/solarium-bundle
+```
 
 Add the NelmioSolariumBundle to your AppKernel.php
 
-    public function registerBundles()
-    {
-        $bundles = array(
-            ...
-            new Nelmio\SolariumBundle\NelmioSolariumBundle(),
-            ...
-        );
+```php
+public function registerBundles()
+{
+    $bundles = array(
         ...
-    }
+        new Nelmio\SolariumBundle\NelmioSolariumBundle(),
+        ...
+    );
+    ...
+}
+```
 
 ## Basic configuration
 
@@ -73,10 +77,10 @@ If you only have one endpoint, the ```client``` section is not necessary
 ## Usage
 
 ```php
-        $client = $this->get('solarium.client');
-        $select = $client->createSelect();
-        $select->setQuery('foo');
-        $results = $client->select($select);
+$client = $this->get('solarium.client');
+$select = $client->createSelect();
+$select->setQuery('foo');
+$results = $client->select($select);
 ```
 
 For more information see the [Solarium documentation](http://www.solarium-project.org/documentation/).
@@ -183,16 +187,16 @@ nelmio_solarium:
 You can also use the service ```solarium.client_registry``` to access the clients you have configured using the names you have used in the configuration (with the example above):
 
 ```php
-    $registry = $this->get('solarium.client_registry');
-    $firstOne = $registry->getClient('firstOne');
-    $secondOne = $registry->getClient('secondOne');
+$registry = $this->get('solarium.client_registry');
+$firstOne = $registry->getClient('firstOne');
+$secondOne = $registry->getClient('secondOne');
 ```
 
 or if you have configured a default client
 
 ```php
-    $registry = $this->get('solarium.client_registry');
-    $default = $registry->getClient();
+$registry = $this->get('solarium.client_registry');
+$default = $registry->getClient();
 ```
 
 ## Overriding Classes
