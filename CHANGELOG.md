@@ -1,3 +1,8 @@
+## 2.2.0 (2015-07-21)
+
+  * Added scheme config option for every endpoint
+  * Bumped Solarium requirement to 3.3.0
+
 ## 2.1.0 (2014-10-21)
 
   * Added client load balance config support
