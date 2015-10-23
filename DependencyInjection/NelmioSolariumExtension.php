@@ -67,8 +67,16 @@ class NelmioSolariumExtension extends Extension
             } else {
                 $clientClass = 'Solarium\Client';
             }
+
             $clientDefinition = new Definition($clientClass);
             $clients[$name] = new Reference($clientName);
+
+            if (isset($clientOptions['adapteroptions'])) {
+                $clientDefinition->addMethodCall(
+                    'setOptions',
+                    array('adapteroptions', $clientOptions['adapteroptions'])
+                );
+            }
 
             $container->setDefinition($clientName, $clientDefinition);
 
