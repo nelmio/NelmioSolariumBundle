@@ -71,10 +71,10 @@ class NelmioSolariumExtension extends Extension
             $clientDefinition = new Definition($clientClass);
             $clients[$name] = new Reference($clientName);
 
-            if (isset($clientOptions['adapteroptions'])) {
+            if (isset($clientOptions['adapter_options'])) {
                 $clientDefinition->addMethodCall(
                     'setOptions',
-                    array('adapteroptions', $clientOptions['adapteroptions'])
+                    array('adapteroptions', $clientOptions['adapter_options'])
                 );
             }
 
