@@ -74,7 +74,7 @@ class NelmioSolariumExtension extends Extension
             if (isset($clientOptions['adapter_options'])) {
                 $clientDefinition->addMethodCall(
                     'setOptions',
-                    array('adapteroptions', $clientOptions['adapter_options'])
+                    array('adapteroptions' => $clientOptions['adapter_options'])
                 );
             }
 
