@@ -5,7 +5,7 @@ namespace Nelmio\SolariumBundle;
 use Solarium\Core\Client\Request as SolariumRequest;
 use Solarium\Core\Client\Response as SolariumResponse;
 use Solarium\Core\Client\Endpoint as SolariumEndpoint;
-use Solarium\Core\Plugin\Plugin as SolariumPlugin;
+use Solarium\Core\Plugin\AbstractPlugin as SolariumPlugin;
 use Solarium\Core\Event\Events as SolariumEvents;
 use Solarium\Core\Event\PreExecuteRequest as SolariumPreExecuteRequestEvent;
 use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
