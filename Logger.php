@@ -23,6 +23,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
 
     private $logger;
     private $stopwatch;
+    private $eventDispatchers = array();
 
     /**
      * Plugin init function
@@ -32,8 +33,11 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
     protected function initPluginType()
     {
         $dispatcher = $this->client->getEventDispatcher();
-        $dispatcher->addListener(SolariumEvents::PRE_EXECUTE_REQUEST, array($this, 'preExecuteRequest'), 1000);
-        $dispatcher->addListener(SolariumEvents::POST_EXECUTE_REQUEST, array($this, 'postExecuteRequest'), -1000);
+        if (!in_array($dispatcher, $this->eventDispatchers, true)) {
+            $dispatcher->addListener(SolariumEvents::PRE_EXECUTE_REQUEST, array($this, 'preExecuteRequest'), 1000);
+            $dispatcher->addListener(SolariumEvents::POST_EXECUTE_REQUEST, array($this, 'postExecuteRequest'), -1000);
+            $this->eventDispatchers[] = $dispatcher;
+        }
     }
 
     /**
