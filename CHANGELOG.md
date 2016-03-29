@@ -1,3 +1,8 @@
+## 2.2.1 (2016-03-29)
+
+  * Fixed Symfony3 support (still requires solarium/solarium `^3.5@dev` until they release 3.5.2 or 3.6.0)
+  * Fixed creating a new EventDispatcher for nothing, we now reuse the Symfony one
+
 ## 2.2.0 (2015-07-21)
 
   * Added scheme config option for every endpoint
