@@ -135,7 +135,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
             throw new \RuntimeException('Requests differ');
         }
 
-        if (null !== $this->stopwatch) {
+        if (null !== $this->stopwatch && $this->stopwatch->isStarted('solr')) {
             $this->stopwatch->stop('solr');
         }
 
@@ -150,7 +150,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
     {
         $endTime = microtime(true) - $this->currentStartTime;
 
-        if (null !== $this->stopwatch) {
+        if (null !== $this->stopwatch && $this->stopwatch->isStarted('solr')) {
             $this->stopwatch->stop('solr');
         }
 
