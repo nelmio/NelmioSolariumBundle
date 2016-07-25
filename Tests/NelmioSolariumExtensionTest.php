@@ -12,6 +12,7 @@
 namespace Nelmio\SolariumBundle\Tests;
 
 use Nelmio\SolariumBundle\DependencyInjection\NelmioSolariumExtension;
+use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
@@ -403,7 +404,7 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Nelmio\SolariumBundle\Logger', $container->get('solarium.data_collector'));
 
         $eventDispatcher = $container->get('solarium.client')->getEventDispatcher();
-        $this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcher', $eventDispatcher);
+        $this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcherInterface', $eventDispatcher);
         $preExecuteListeners = $eventDispatcher->getListeners(\Solarium\Core\Event\Events::PRE_EXECUTE_REQUEST);
         $this->assertEquals(1, count($preExecuteListeners));
         $this->assertInstanceOf('Nelmio\SolariumBundle\Logger', $preExecuteListeners[0][0]);
@@ -473,7 +474,9 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
     private function createCompiledContainerForConfig($config, $debug = false)
     {
         $container = $this->createContainer($debug);
+        $container->registerExtension(new FrameworkExtension());
         $container->registerExtension(new NelmioSolariumExtension());
+        $container->loadFromExtension('framework', array());
         $container->loadFromExtension('nelmio_solarium', $config);
         $this->compileContainer($container);
 
@@ -483,9 +486,10 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
     private function createContainer($debug = false)
     {
         $container = new ContainerBuilder(new ParameterBag(array(
-            'kernel.cache_dir' => __DIR__,
-            'kernel.charset'   => 'UTF-8',
-            'kernel.debug'     => $debug,
+            'kernel.cache_dir'       => __DIR__,
+            'kernel.charset'         => 'UTF-8',
+            'kernel.debug'           => $debug,
+            'kernel.container_class' => 'dummy',
         )));
 
         return $container;
