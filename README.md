@@ -198,6 +198,20 @@ or if you have configured a default client
 $registry = $this->get('solarium.client_registry');
 $default = $registry->getClient();
 ```
+## Plugins
+
+Solarium works with plugins. If you want to use your own plugins, you can register a plugin in the bundle configuration either with a service id or the plugin class:
+
+```yaml
+nelmio_solarium:
+    clients:
+        default:
+            plugins:
+                test_plugin_service:
+                    plugin_service: plugin _service_id
+                test_plugin_classname:
+                    plugin_class: Some\Plugin\TestPlugin
+```
 
 ## Overriding Classes
 

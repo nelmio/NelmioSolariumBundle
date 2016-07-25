@@ -24,6 +24,10 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class NelmioSolariumExtension extends Extension
 {
+    /**
+     * @param array $configs
+     * @param ContainerBuilder $container
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $processor     = new Processor();
@@ -121,6 +125,17 @@ class NelmioSolariumExtension extends Extension
             //Add the optional adapter class
             if (isset($clientOptions['adapter_class'])) {
                 $clientDefinition->addMethodCall('setAdapter', array($clientOptions['adapter_class']));
+            }
+
+            if (isset($clientOptions['plugins'])) {
+                foreach ($clientOptions['plugins'] as $pluginName => $pluginOptions) {
+                    if (isset($pluginOptions['plugin_class'])) {
+                        $plugin = $pluginOptions['plugin_class'];
+                    } else {
+                        $plugin = new Reference($pluginOptions['plugin_service']);
+                    }
+                    $clientDefinition->addMethodCall('registerPlugin', array($pluginName, $plugin));
+                }
             }
 
             if ($isDebug) {
