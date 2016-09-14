@@ -83,7 +83,7 @@ $select->setQuery('foo');
 $results = $client->select($select);
 ```
 
-For more information see the [Solarium documentation](http://www.solarium-project.org/documentation/).
+For more information see the [Solarium documentation](http://solarium.readthedocs.io/en/stable/).
 
 ## Multiple clients and endpoints
 
