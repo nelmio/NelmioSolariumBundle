@@ -75,7 +75,6 @@ class NelmioSolariumExtension extends Extension
             $clients[$name] = new Reference($clientName);
 
             $container->setDefinition($clientName, $clientDefinition);
-            $clientDefinition->addMethodCall('setEventDispatcher', array(new Reference('event_dispatcher')));
 
             if ($name == $defaultClient) {
                 $container->setAlias('solarium.client', $clientName);
