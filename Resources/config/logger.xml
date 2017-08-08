@@ -8,7 +8,10 @@
     </parameters>
     <services>
         <service id="solarium.data_collector" class="%solarium.data_collector.class%">
-            <tag name="data_collector" template="NelmioSolariumBundle:DataCollector:solarium" id="solr" />
+            <tag name="data_collector"
+                template="@NelmioSolarium/DataCollector/solarium"
+                id="solr"
+            />
             <tag name="monolog.logger" channel="solr" />
             <call method="setLogger">
                 <argument type="service" id="logger" on-invalid="ignore" />
