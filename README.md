@@ -58,20 +58,6 @@ nelmio_solarium:
             endpoints: [default]
 ```
 
-Or with dsn:
-
-```yaml
-nelmio_solarium:
-    endpoints:
-        default:
-            dsn: http://localhost:8983/solr/active
-            timeout: 5
-    clients:
-        default:
-            endpoints: [default]
-
-```
-
 If you only have one endpoint, the ```client``` section is not necessary
 
 ## Usage

@@ -1,3 +1,7 @@
+## 3.0.0 - unreleased
+### Changed
+- Removed support of `dsn` option for the `endpoint` parameter
+
 ## 2.2.1 (2016-03-29)
 
   * Fixed Symfony3 support (still requires solarium/solarium `^3.5@dev` until they release 3.5.2 or 3.6.0)
