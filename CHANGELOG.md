@@ -1,3 +1,17 @@
+## 3.0.0 - unreleased
+
+ * Removed support of `dsn` option for the `endpoint` parameter
+
+## 2.4.0 (2017-08-08)
+
+ * Added symfony4 to allowed versions
+ * Fixed symfony3.2 WebProfiler compatibility issues
+
+## 2.3.0 (2016-12-04)
+
+ * Added support for configuring solarium plugins
+ * Fixed the data collector templates for the new symfony profiler
+
 ## 2.2.1 (2016-03-29)
 
   * Fixed Symfony3 support (still requires solarium/solarium `^3.5@dev` until they release 3.5.2 or 3.6.0)

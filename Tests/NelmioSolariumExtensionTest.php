@@ -67,48 +67,6 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $endpoint->getOption('timeout'));
     }
 
-    public function testLoadDsnConfiguration()
-    {
-        $config = array(
-            'endpoints' => array(
-                'default' => array(
-                    'dsn' => 'http://somehost/solr2'
-                )
-            ),
-            'clients' => array(
-                'default' => array()
-            )
-        );
-
-        $container = $this->createCompiledContainerForConfig($config);
-
-        $endpoint = $container->get('solarium.client')->getEndpoint();
-
-        $this->assertEquals('somehost', $endpoint->getOption('host'));
-        $this->assertEquals('/solr2', $endpoint->getOption('path'));
-        $this->assertEquals('80', $endpoint->getOption('port'));
-
-        $config = array(
-            'endpoints' => array(
-                'default' => array(
-                    'dsn' => 'http://somehost:8080/solr/core_path/'
-                )
-            ),
-            'clients' => array(
-                'default' => array()
-            )
-        );
-
-        $container = $this->createCompiledContainerForConfig($config);
-
-        $endpoint = $container->get('solarium.client')->getEndpoint();
-
-        $this->assertEquals('http', $endpoint->getOption('scheme'));
-        $this->assertEquals('somehost', $endpoint->getOption('host'));
-        $this->assertEquals('/solr/core_path', $endpoint->getOption('path'));
-        $this->assertEquals('8080', $endpoint->getOption('port'));
-    }
-
     public function testLoadCustomAdapter()
     {
         $adapter = $this->getMock('Solarium\Core\Client\Adapter\Http');
@@ -181,59 +139,6 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\MyPluginClass', $plugin1);
         $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\MyPluginClass', $plugin2);
-    }
-
-
-    public function testDsnAndOtherParamsTogether()
-    {
-        $config = array(
-            'default_client' => 'client2',
-            'endpoints' => array(
-                'endpoint1' => array(
-                    'dsn' => 'http://localhostBlahBlah/path',
-                    'host' => 'localhost',
-                    'port' => 123
-                )
-            ),
-            'clients' => array(
-                'client1' => array()
-            ),
-        );
-
-        $container = $this->createCompiledContainerForConfig($config);
-
-        $endpoint = $container->get('solarium.client')->getEndpoint();
-
-        $this->assertEquals('http', $endpoint->getOption('scheme'));
-        $this->assertEquals('localhostBlahBlah', $endpoint->getOption('host'));
-        $this->assertEquals('/path', $endpoint->getOption('path'));
-        $this->assertEquals('80', $endpoint->getOption('port'));
-    }
-
-    public function testDsnAndOtherParamsWithHttpsTogether()
-    {
-        $config = array(
-            'default_client' => 'client2',
-            'endpoints' => array(
-                'endpoint1' => array(
-                    'dsn' => 'https://localhostBlahBlah/path',
-                    'host' => 'localhost',
-                    'port' => 123
-                )
-            ),
-            'clients' => array(
-                'client1' => array()
-            ),
-        );
-
-        $container = $this->createCompiledContainerForConfig($config);
-
-        $endpoint = $container->get('solarium.client')->getEndpoint();
-
-        $this->assertEquals('https', $endpoint->getOption('scheme'));
-        $this->assertEquals('localhostBlahBlah', $endpoint->getOption('host'));
-        $this->assertEquals('/path', $endpoint->getOption('path'));
-        $this->assertEquals('80', $endpoint->getOption('port'));
     }
 
     public function testEndpoints()
