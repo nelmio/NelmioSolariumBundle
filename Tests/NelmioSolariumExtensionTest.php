@@ -13,7 +13,9 @@ namespace Nelmio\SolariumBundle\Tests;
 
 use Nelmio\SolariumBundle\DependencyInjection\NelmioSolariumExtension;
 use PHPUnit\Framework\TestCase;
+use Solarium\Client;
 use Solarium\Core\Client\Adapter\Http;
+use Solarium\Core\Client\Adapter\Curl;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -31,10 +33,10 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        $this->assertInstanceOf('Solarium\Client', $container->get('solarium.client'));
+        $this->assertInstanceOf(Client::class, $container->get('solarium.client'));
 
         $adapter = $container->get('solarium.client')->getAdapter();
-        $this->assertInstanceOf('Solarium\Core\Client\Adapter\Curl', $adapter);
+        $this->assertInstanceOf(Curl::class, $adapter);
 
         $endpoint = $container->get('solarium.client')->getEndpoint();
 
