@@ -12,12 +12,14 @@
 namespace Nelmio\SolariumBundle\Tests;
 
 use Nelmio\SolariumBundle\DependencyInjection\NelmioSolariumExtension;
+use PHPUnit\Framework\TestCase;
+use Solarium\Core\Client\Adapter\Http;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
-class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
+class NelmioSolariumExtensionTest extends TestCase
 {
     public function testLoadEmptyConfiguration()
     {
@@ -69,7 +71,7 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadCustomAdapter()
     {
-        $adapter = $this->getMock('Solarium\Core\Client\Adapter\Http');
+        $adapter = $this->createMock(Http::class);
         $adapterClass = get_class($adapter);
 
         $config = array(
