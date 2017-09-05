@@ -1,5 +1,7 @@
 ## 3.0.0 - unreleased
 
+ * Updated tests, use ::class instead of FQDN, minor fixes
+ * Added simplephp to require-dev
  * Removed support of `dsn` option for the `endpoint` parameter
 
 ## 2.4.0 (2017-08-08)

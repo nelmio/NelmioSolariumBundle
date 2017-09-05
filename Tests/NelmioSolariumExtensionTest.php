@@ -11,13 +11,24 @@
 
 namespace Nelmio\SolariumBundle\Tests;
 
+use Nelmio\SolariumBundle\ClientRegistry;
 use Nelmio\SolariumBundle\DependencyInjection\NelmioSolariumExtension;
+use Nelmio\SolariumBundle\Logger;
+use PHPUnit\Framework\TestCase;
+use Solarium\Client;
+use Solarium\Core\Client\Adapter\Http;
+use Solarium\Core\Client\Adapter\Curl;
+use Solarium\Core\Client\Endpoint;
+use Solarium\Core\Event\Events;
+use Solarium\Core\Plugin\AbstractPlugin;
+use Solarium\Plugin\Loadbalancer\Loadbalancer;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
+class NelmioSolariumExtensionTest extends TestCase
 {
     public function testLoadEmptyConfiguration()
     {
@@ -29,12 +40,14 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        $this->assertInstanceOf('Solarium\Client', $container->get('solarium.client'));
+        $this->assertInstanceOf(Client::class, $container->get('solarium.client'));
 
         $adapter = $container->get('solarium.client')->getAdapter();
-        $this->assertInstanceOf('Solarium\Core\Client\Adapter\Curl', $adapter);
+        $this->assertInstanceOf(Curl::class, $adapter);
 
+        /** @var Endpoint $endpoint */
         $endpoint = $container->get('solarium.client')->getEndpoint();
+        $this->assertInstanceOf(Endpoint::class, $endpoint);
 
         $this->assertEquals('http', $endpoint->getOption('scheme'));
         $this->assertEquals('127.0.0.1', $endpoint->getOption('host'));
@@ -53,12 +66,14 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        $this->assertInstanceOf('Solarium\Client', $container->get('solarium.client'));
+        $this->assertInstanceOf(Client::class, $container->get('solarium.client'));
 
         $adapter = $container->get('solarium.client')->getAdapter();
-        $this->assertInstanceOf('Solarium\Core\Client\Adapter\Curl', $adapter);
+        $this->assertInstanceOf(Curl::class, $adapter);
 
+        /** @var Endpoint $endpoint */
         $endpoint = $container->get('solarium.client')->getEndpoint();
+        $this->assertInstanceOf(Endpoint::class, $endpoint);
 
         $this->assertEquals('http', $endpoint->getOption('scheme'));
         $this->assertEquals('127.0.0.1', $endpoint->getOption('host'));
@@ -69,7 +84,7 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadCustomAdapter()
     {
-        $adapter = $this->getMock('Solarium\Core\Client\Adapter\Http');
+        $adapter = $this->createMock(Http::class);
         $adapterClass = get_class($adapter);
 
         $config = array(
@@ -82,8 +97,8 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        $this->assertInstanceOf('Solarium\Client', $container->get('solarium.client'));
-        $this->assertInstanceOf($adapterClass, $container->get('solarium.client')->getAdapter());
+        $this->assertInstanceOf(Client::class, $container->get('solarium.client'));
+        $this->assertInstanceOf(Http::class, $container->get('solarium.client')->getAdapter());
     }
 
     public function testLoadCustomClient()
@@ -91,15 +106,15 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'clients' => array(
                 'default' => array(
-                    'client_class' => 'Nelmio\SolariumBundle\Tests\StubClient'
+                    'client_class' => StubClient::class
                 )
             )
         );
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client'));
-        $this->assertInstanceOf('Solarium\Core\Client\Adapter\Curl', $container->get('solarium.client')->getAdapter());
+        $this->assertInstanceOf(StubClient::class, $container->get('solarium.client'));
+        $this->assertInstanceOf(Curl::class, $container->get('solarium.client')->getAdapter());
     }
 
     public function testDefaultClient()
@@ -109,16 +124,16 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
             'clients' => array(
                 'client1' => array(),
                 'client2' => array(
-                    'client_class' => 'Nelmio\SolariumBundle\Tests\StubClient'
+                    'client_class' => StubClient::class
                 )
             ),
         );
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        $this->assertInstanceOf('Solarium\Client', $container->get('solarium.client.client1'));
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client'));
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\StubClient', $container->get('solarium.client.client2'));
+        $this->assertInstanceOf(Client::class, $container->get('solarium.client.client1'));
+        $this->assertInstanceOf(StubClient::class, $container->get('solarium.client'));
+        $this->assertInstanceOf(StubClient::class, $container->get('solarium.client.client2'));
     }
 
     public function testPlugins()
@@ -126,19 +141,19 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $config = array(
           'clients' => array(
             'client' => array(
-              'plugins' => array('plugin1' => array('plugin_service' => 'my_plugin'), 'plugin2' => array('plugin_class' => 'Nelmio\SolariumBundle\Tests\MyPluginClass'))
+              'plugins' => array('plugin1' => array('plugin_service' => 'my_plugin'), 'plugin2' => array('plugin_class' => MyPluginClass::class))
             )
           ),
         );
 
-        $container = $this->createCompiledContainerForConfig($config, true, array('my_plugin' => new Definition('Nelmio\SolariumBundle\Tests\MyPluginClass')));
+        $container = $this->createCompiledContainerForConfig($config, true, array('my_plugin' => new Definition(MyPluginClass::class)));
 
         $client = $container->get('solarium.client');
         $plugin1 = $client->getPlugin('plugin1');
         $plugin2 = $client->getPlugin('plugin2');
 
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\MyPluginClass', $plugin1);
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Tests\MyPluginClass', $plugin2);
+        $this->assertInstanceOf(MyPluginClass::class, $plugin1);
+        $this->assertInstanceOf(MyPluginClass::class, $plugin2);
     }
 
     public function testEndpoints()
@@ -169,13 +184,16 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
+        /** @var Endpoint $endpoint */
         $endpoint = $container->get('solarium.client')->getEndpoint();
+        $this->assertInstanceOf(Endpoint::class, $endpoint);
 
         $this->assertEquals('endpoint1', $endpoint->getOption('key'));
         $this->assertEquals('localhost', $endpoint->getOption('host'));
         $this->assertEquals('123', $endpoint->getOption('port'));
         $this->assertEquals('core1', $endpoint->getOption('core'));
 
+        /** @var Endpoint[] $endpoints */
         $endpoints = $container->get('solarium.client')->getEndpoints();
 
         $this->assertEquals(3, count($container->get('solarium.client')->getEndpoints()));
@@ -227,7 +245,9 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
+        /** @var Endpoint $endpoint */
         $endpoint = $container->get('solarium.client')->getEndpoint();
+        $this->assertInstanceOf(Endpoint::class, $endpoint);
 
         $this->assertEquals(1, count($container->get('solarium.client')->getEndpoints()));
 
@@ -262,13 +282,16 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
+        /** @var Endpoint $endpoint */
         $endpoint = $container->get('solarium.client')->getEndpoint();
+        $this->assertInstanceOf(Endpoint::class, $endpoint);
 
         $this->assertEquals('endpoint2', $endpoint->getOption('key'));
         $this->assertEquals('localhost', $endpoint->getOption('host'));
         $this->assertEquals('123', $endpoint->getOption('port'));
         $this->assertEquals('core2', $endpoint->getOption('core'));
 
+        /** @var Endpoint[] $endpoints */
         $endpoints = $container->get('solarium.client')->getEndpoints();
 
         $this->assertEquals(2, count($container->get('solarium.client')->getEndpoints()));
@@ -314,11 +337,11 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         );
         $container = $this->createCompiledContainerForConfig($config);
         $clientRegistry = $container->get('solarium.client_registry');
-        $this->assertInstanceOf('Nelmio\SolariumBundle\ClientRegistry', $clientRegistry);
-        $this->assertInstanceOf('Solarium\Client', $clientRegistry->getClient('client1'));
+        $this->assertInstanceOf(ClientRegistry::class, $clientRegistry);
+        $this->assertInstanceOf(Client::class, $clientRegistry->getClient('client1'));
         $this->assertEquals(array('client1', 'client2'), $clientRegistry->getClientNames());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->assertNotNull($clientRegistry->getClient());
     }
 
@@ -328,17 +351,18 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->createCompiledContainerForConfig($config, true);
 
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Logger', $container->get('solarium.data_collector'));
+        $this->assertInstanceOf(Logger::class, $container->get('solarium.data_collector'));
 
+        /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $container->get('solarium.client')->getEventDispatcher();
-        $this->assertInstanceOf('Symfony\Component\EventDispatcher\EventDispatcherInterface', $eventDispatcher);
-        $preExecuteListeners = $eventDispatcher->getListeners(\Solarium\Core\Event\Events::PRE_EXECUTE_REQUEST);
+        $this->assertInstanceOf(EventDispatcherInterface::class, $eventDispatcher);
+        $preExecuteListeners = $eventDispatcher->getListeners(Events::PRE_EXECUTE_REQUEST);
         $this->assertEquals(1, count($preExecuteListeners));
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Logger', $preExecuteListeners[0][0]);
+        $this->assertInstanceOf(Logger::class, $preExecuteListeners[0][0]);
         $this->assertEquals('preExecuteRequest', $preExecuteListeners[0][1]);
-        $postExecuteListeners = $eventDispatcher->getListeners(\Solarium\Core\Event\Events::POST_EXECUTE_REQUEST);
+        $postExecuteListeners = $eventDispatcher->getListeners(Events::POST_EXECUTE_REQUEST);
         $this->assertEquals(1, count($postExecuteListeners));
-        $this->assertInstanceOf('Nelmio\SolariumBundle\Logger', $postExecuteListeners[0][0]);
+        $this->assertInstanceOf(Logger::class, $postExecuteListeners[0][0]);
         $this->assertEquals('postExecuteRequest', $postExecuteListeners[0][1]);
     }
 
@@ -374,6 +398,7 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
 
         $client = $container->get('solarium.client');
 
+        /** @var Endpoint[] $endpoints */
         $endpoints = $client->getEndpoints();
 
         $this->assertCount(1, $endpoints);
@@ -383,7 +408,9 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
         $clientPlugins = $client->getPlugins();
         $this->assertArrayHasKey('loadbalancer', $clientPlugins);
 
+        /** @var Loadbalancer $loadBalancerPlugin */
         $loadBalancerPlugin = $client->getPlugin('loadbalancer');
+        $this->assertInstanceOf(Loadbalancer::class, $loadBalancerPlugin);
         $this->assertEquals($loadBalancerPlugin, $container->get('solarium.client.client1.load_balancer'));
 
         $loadBalancedEndpoints = $loadBalancerPlugin->getEndpoints();
@@ -431,10 +458,10 @@ class NelmioSolariumExtensionTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class StubClient extends \Solarium\Client
+class StubClient extends Client
 {
 }
 
-class MyPluginClass extends \Solarium\Core\Plugin\Plugin {
+class MyPluginClass extends AbstractPlugin {
 
 }

@@ -15,8 +15,12 @@
         }
     ],
     "require": {
+        "php": ">=5.5",
         "symfony/framework-bundle": "^2.3 || ^3.0 || ^4.0",
         "solarium/solarium": "^3.3"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "~3.3@dev"
     },
     "autoload": {
         "psr-4": { "Nelmio\\SolariumBundle\\": "" }
