@@ -1,5 +1,6 @@
 ## 3.0.0 - unreleased
 
+ * [#76] Fixed autowiring deprecation on Symfony 3.3
  * Updated tests, use ::class instead of FQDN, minor fixes
  * Added simplephp to require-dev
  * Removed support of `dsn` option for the `endpoint` parameter
