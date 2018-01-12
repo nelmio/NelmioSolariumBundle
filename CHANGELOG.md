@@ -5,11 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+### Changed
+### Deprecated
+### Fixed
+### Security
+
+## [v3.0.0-beta](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta) - 2018-01-12
 ### Changed
  - Updated changelog to follow the "Keep a Changelog" format
  - Updated tests: use `::class` instead of FQDN, minor fixes
  - Removed support of `dsn` option for the `endpoint` parameter
-### Deprecated
 ### Fixed
  - Removed usage of deprecated Solarium\Core\Plugin\Plugin
  - Fixed compatibility with Symfony4 DataCollectorInterface
