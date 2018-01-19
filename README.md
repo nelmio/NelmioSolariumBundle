@@ -1,4 +1,7 @@
-# NelmioSolariumBundle
+# NelmioSolarium Bundle
+
+[![Latest Version](https://img.shields.io/github/release/nelmio/NelmioSolariumBundle.svg?style=flat-square)](https://github.com/nelmio/NelmioSolariumBundle/releases)
+[![Total Downloads](https://img.shields.io/packagist/dt/nelmio/solarium-bundle.svg?style=flat-square)](https://packagist.org/packages/nelmio/solarium-bundle)
 
 ## About
 
