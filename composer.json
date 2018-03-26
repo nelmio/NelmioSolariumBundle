@@ -1,5 +1,5 @@
 {
-    "name": "mertoksuz/solarium-bundle",
+    "name": "nelmio/solarium-bundle",
     "description": "Integration with solarium solr client.",
     "keywords": ["solr", "solarium", "search"],
     "type": "symfony-bundle",
