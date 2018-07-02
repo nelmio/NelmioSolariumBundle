@@ -12,10 +12,21 @@
 namespace Nelmio\SolariumBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Nelmio\ApiDocBundle\DependencyInjection\Compiler\ConfigurationPass;
+use Nelmio\ApiDocBundle\DependencyInjection\Compiler\TagDescribersPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
  */
 class NelmioSolariumBundle extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new ConfigurationPass());
+        $container->addCompilerPass(new TagDescribersPass());
+    }
 }
