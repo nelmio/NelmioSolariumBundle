@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 ### Security
 
+## [v3.0.0-beta.2](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta.2) - 2018-08-13
+### Added
+ - Addded dupport for `solariumphp/solarium` v4.x
+
 ## [v3.0.0-beta](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta) - 2018-01-12
 ### Changed
  - Updated changelog to follow the "Keep a Changelog" format
