@@ -25,8 +25,13 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('nelmio_solarium');
+        $treeBuilder = new TreeBuilder('nelmio_solarium');
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config < 4.2
+            $rootNode = $treeBuilder->root('nelmio_solarium');
+        }
 
         $rootNode
             ->children()
