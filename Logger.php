@@ -66,7 +66,8 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
             'request' => $request,
             'response' => $response,
             'duration' => $duration,
-            'base_uri' => $endpoint->getBaseUri(),
+            // Support for Solarium v4.2: getBaseUri() has been deprecated in favor of getCoreBaseUri()
+            'base_uri' =>  method_exists($endpoint, 'getCoreBaseUri') ? $endpoint->getCoreBaseUri() : $endpoint->getBaseUri(),
         );
     }
 
