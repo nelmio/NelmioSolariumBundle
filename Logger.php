@@ -66,8 +66,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
             'request' => $request,
             'response' => $response,
             'duration' => $duration,
-            // Support for Solarium v4.2: getBaseUri() has been deprecated in favor of getCoreBaseUri()
-            'base_uri' =>  method_exists($endpoint, 'getCoreBaseUri') ? $endpoint->getCoreBaseUri() : $endpoint->getBaseUri(),
+            'base_uri' => $this->getEntpointBaseUrl($endpoint),
         );
     }
 
@@ -121,7 +120,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         $this->currentEndpoint = $event->getEndpoint();
 
         if (null !== $this->logger) {
-            $this->logger->debug($event->getEndpoint()->getBaseUri() . $this->currentRequest->getUri());
+            $this->logger->debug($this->getEntpointBaseUrl($this->currentEndpoint) . $this->currentRequest->getUri());
         }
         $this->currentStartTime = microtime(true);
     }
@@ -176,5 +175,14 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
     {
         $this->data = array();
         $this->queries = array();
+    }
+
+    /**
+     * @return string
+     */
+    private function getEntpointBaseUrl(SolariumEndpoint $endpoint)
+    {
+        // Support for Solarium v4.2: getBaseUri() has been deprecated in favor of getCoreBaseUri()
+        return method_exists($endpoint, 'getCoreBaseUri') ? $endpoint->getCoreBaseUri() : $endpoint->getBaseUri();
     }
 }
