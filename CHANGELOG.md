@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Deprecated
 ### Fixed
  - Fixed deprecations from Solarium 4.2
+ - Fixed deprecations from Symfony 4.2
 ### Security
 
 ## [v3.0.0-beta.2](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta.2) - 2018-08-13
