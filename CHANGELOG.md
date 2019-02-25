@@ -7,15 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 ### Changed
+### Deprecated
+### Fixed
+### Security
+
+## [v3.0.0-beta.3](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta.3) - 2019-02-26
+### Changed
  - Refactored class locations (using src and tests sub-directories)
  - Removed support for Solarium 3.x (supports for Solarium >= 4.0)
  - Removed support for unmaintained SF versions (supports SF >= 2.8)
  - Removed support for unmaintained PHP version (supports PHP >= 7.1)
-### Deprecated
 ### Fixed
  - Fixed deprecations from Solarium 4.2
  - Fixed deprecations from Symfony 4.2
-### Security
 
 ## [v3.0.0-beta.2](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta.2) - 2018-08-13
 ### Added
