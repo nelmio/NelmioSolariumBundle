@@ -13,6 +13,7 @@ namespace Nelmio\SolariumBundle\DependencyInjection;
 
 use Solarium\Core\Client\Endpoint;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -66,9 +67,9 @@ class NelmioSolariumExtension extends Extension
             $container->setDefinition($clientName, $clientDefinition);
             $clientDefinition->addMethodCall('setEventDispatcher', array(new Reference('event_dispatcher')));
 
-            if ($name == $defaultClient) {
-                $container->setAlias('solarium.client', $clientName);
-                $container->setAlias($clientClass, $clientName);
+            if ($name === $defaultClient) {
+                $container->setAlias('solarium.client', new Alias($clientName, true));
+                $container->setAlias($clientClass, new Alias($clientName, true));
             }
 
             //If some specific endpoints are given

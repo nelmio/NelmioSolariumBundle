@@ -30,6 +30,7 @@ class Configuration implements ConfigurationInterface
         if (method_exists($treeBuilder, 'getRootNode')) {
             $rootNode = $treeBuilder->getRootNode();
         } else {
+            // BC layer for symfony/config < 4.2
             $rootNode = $treeBuilder->root('nelmio_solarium');
         }
 
