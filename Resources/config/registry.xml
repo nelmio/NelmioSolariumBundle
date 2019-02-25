@@ -9,7 +9,7 @@
     </parameters>
 
     <services>
-        <service id="solarium.client_registry" class="%solarium.client_registry.class%">
+        <service id="solarium.client_registry" class="%solarium.client_registry.class%" public="true">
             <argument type="collection"></argument>
             <argument>null</argument>
         </service>

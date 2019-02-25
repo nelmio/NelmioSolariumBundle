@@ -20,10 +20,12 @@
         "solarium/solarium": "^3.3 || ^4.0"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~3.3@dev"
+        "symfony/phpunit-bridge": "^4.2"
     },
     "autoload": {
-        "psr-4": { "Nelmio\\SolariumBundle\\": "" }
+        "psr-4": {
+            "Nelmio\\SolariumBundle\\": ""
+        }
     },
     "extra": {
         "branch-alias": {

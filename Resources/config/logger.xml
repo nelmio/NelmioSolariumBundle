@@ -7,7 +7,7 @@
         <parameter key="solarium.data_collector.class">Nelmio\SolariumBundle\Logger</parameter>
     </parameters>
     <services>
-        <service id="solarium.data_collector" class="%solarium.data_collector.class%">
+        <service id="solarium.data_collector" class="%solarium.data_collector.class%" public="true">
             <tag name="data_collector"
                 template="@NelmioSolarium/DataCollector/solarium"
                 id="solr"
