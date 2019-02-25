@@ -15,8 +15,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5",
-        "symfony/framework-bundle": "^2.3 || ^3.0 || ^4.0",
+        "php": "^7.1",
+        "symfony/framework-bundle": "^2.8 || ^3.0 || ^4.0",
         "solarium/solarium": "^3.3 || ^4.0"
     },
     "require-dev": {
