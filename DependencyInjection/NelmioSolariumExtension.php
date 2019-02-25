@@ -119,7 +119,7 @@ class NelmioSolariumExtension extends Extension
         }
     }
 
-    private function configureEndpoints(array $endpoints, ContainerBuilder $container)
+    private function configureEndpoints(array $endpoints, ContainerBuilder $container): array
     {
         $endpointReferences = array();
         foreach ($endpoints as $name => $endpointOptions) {

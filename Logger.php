@@ -2,8 +2,8 @@
 
 namespace Nelmio\SolariumBundle;
 
+use Psr\Log\LoggerInterface;
 use Solarium\Core\Client\Request as SolariumRequest;
-use Solarium\Core\Client\Response as SolariumResponse;
 use Solarium\Core\Client\Endpoint as SolariumEndpoint;
 use Solarium\Core\Plugin\AbstractPlugin as SolariumPlugin;
 use Solarium\Core\Event\Events as SolariumEvents;
@@ -12,6 +12,7 @@ use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializable
 {
@@ -40,22 +41,12 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         }
     }
 
-    /**
-     * Set the Logger
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    /**
-     * Set the Stopwatch
-     *
-     * @param Stopwatch $stopwatch
-     */
-    public function setStopwatch($stopwatch)
+    public function setStopwatch(Stopwatch $stopwatch)
     {
         $this->stopwatch = $stopwatch;
     }
@@ -66,7 +57,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
             'request' => $request,
             'response' => $response,
             'duration' => $duration,
-            'base_uri' => $this->getEntpointBaseUrl($endpoint),
+            'base_uri' => $this->getEndpointBaseUrl($endpoint),
         );
     }
 
@@ -120,7 +111,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         $this->currentEndpoint = $event->getEndpoint();
 
         if (null !== $this->logger) {
-            $this->logger->debug($this->getEntpointBaseUrl($this->currentEndpoint) . $this->currentRequest->getUri());
+            $this->logger->debug($this->getEndpointBaseUrl($this->currentEndpoint) . $this->currentRequest->getUri());
         }
         $this->currentStartTime = microtime(true);
     }
@@ -177,10 +168,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         $this->queries = array();
     }
 
-    /**
-     * @return string
-     */
-    private function getEntpointBaseUrl(SolariumEndpoint $endpoint)
+    private function getEndpointBaseUrl(SolariumEndpoint $endpoint): string
     {
         // Support for Solarium v4.2: getBaseUri() has been deprecated in favor of getCoreBaseUri()
         return method_exists($endpoint, 'getCoreBaseUri') ? $endpoint->getCoreBaseUri() : $endpoint->getBaseUri();
