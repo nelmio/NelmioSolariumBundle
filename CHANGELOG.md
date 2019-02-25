@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 ### Changed
+ - Refactored class locations (using src and tests sub-directories)
  - Removed support for Solarium 3.x (supports for Solarium >= 4.0)
  - Removed support for unmaintained SF versions (supports SF >= 2.8)
  - Removed support for unmaintained PHP version (supports PHP >= 7.1)

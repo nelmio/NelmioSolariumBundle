@@ -9,7 +9,7 @@
 >
     <testsuites>
         <testsuite name="NelmioSolariumBundle Test Suite">
-            <directory>./Tests/</directory>
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
