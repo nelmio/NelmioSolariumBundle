@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the Nelmio SolariumBundle.
  *
  * (c) Nelmio <hello@nelm.io>
@@ -49,11 +49,11 @@ class NelmioSolariumExtensionTest extends TestCase
         $endpoint = $container->get('solarium.client')->getEndpoint();
         $this->assertInstanceOf(Endpoint::class, $endpoint);
 
-        $this->assertEquals('http', $endpoint->getOption('scheme'));
-        $this->assertEquals('127.0.0.1', $endpoint->getOption('host'));
-        $this->assertEquals('/solr', $endpoint->getOption('path'));
-        $this->assertEquals('8983', $endpoint->getOption('port'));
-        $this->assertEquals(5, $endpoint->getOption('timeout'));
+        $this->assertEquals('http', $endpoint->getScheme());
+        $this->assertEquals('127.0.0.1', $endpoint->getHost());
+        $this->assertEquals('/solr', $endpoint->getPath());
+        $this->assertEquals(8983, $endpoint->getPort());
+        $this->assertEquals('5', $endpoint->getTimeout());
     }
 
     public function testNoClients()
@@ -75,11 +75,11 @@ class NelmioSolariumExtensionTest extends TestCase
         $endpoint = $container->get('solarium.client')->getEndpoint();
         $this->assertInstanceOf(Endpoint::class, $endpoint);
 
-        $this->assertEquals('http', $endpoint->getOption('scheme'));
-        $this->assertEquals('127.0.0.1', $endpoint->getOption('host'));
-        $this->assertEquals('/solr', $endpoint->getOption('path'));
-        $this->assertEquals('8983', $endpoint->getOption('port'));
-        $this->assertEquals(5, $endpoint->getOption('timeout'));
+        $this->assertEquals('http', $endpoint->getScheme());
+        $this->assertEquals('127.0.0.1', $endpoint->getHost());
+        $this->assertEquals('/solr', $endpoint->getPath());
+        $this->assertEquals(8983, $endpoint->getPort());
+        $this->assertEquals('5', $endpoint->getTimeout());
     }
 
     public function testLoadCustomAdapter()
@@ -188,10 +188,10 @@ class NelmioSolariumExtensionTest extends TestCase
         $endpoint = $container->get('solarium.client')->getEndpoint();
         $this->assertInstanceOf(Endpoint::class, $endpoint);
 
-        $this->assertEquals('endpoint1', $endpoint->getOption('key'));
-        $this->assertEquals('localhost', $endpoint->getOption('host'));
-        $this->assertEquals('123', $endpoint->getOption('port'));
-        $this->assertEquals('core1', $endpoint->getOption('core'));
+        $this->assertEquals('endpoint1', $endpoint->getKey());
+        $this->assertEquals('localhost', $endpoint->getHost());
+        $this->assertEquals(123, $endpoint->getPort());
+        $this->assertEquals('core1', $endpoint->getCore());
 
         /** @var Endpoint[] $endpoints */
         $endpoints = $container->get('solarium.client')->getEndpoints();
@@ -199,25 +199,25 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals(3, count($container->get('solarium.client')->getEndpoints()));
 
         $this->assertTrue(isset($endpoints['endpoint1']));
-        $this->assertEquals('endpoint1', $endpoints['endpoint1']->getOption('key'));
-        $this->assertEquals('http', $endpoints['endpoint1']->getOption('scheme'));
-        $this->assertEquals('localhost', $endpoints['endpoint1']->getOption('host'));
-        $this->assertEquals('123', $endpoints['endpoint1']->getOption('port'));
-        $this->assertEquals('core1', $endpoints['endpoint1']->getOption('core'));
+        $this->assertEquals('endpoint1', $endpoints['endpoint1']->getKey());
+        $this->assertEquals('http', $endpoints['endpoint1']->getScheme());
+        $this->assertEquals('localhost', $endpoints['endpoint1']->getHost());
+        $this->assertEquals(123, $endpoints['endpoint1']->getPort());
+        $this->assertEquals('core1', $endpoints['endpoint1']->getCore());
 
         $this->assertTrue(isset($endpoints['endpoint2']));
-        $this->assertEquals('endpoint2', $endpoints['endpoint2']->getOption('key'));
-        $this->assertEquals('http', $endpoints['endpoint2']->getOption('scheme'));
-        $this->assertEquals('localhost', $endpoints['endpoint2']->getOption('host'));
-        $this->assertEquals('123', $endpoints['endpoint2']->getOption('port'));
-        $this->assertEquals('core2', $endpoints['endpoint2']->getOption('core'));
+        $this->assertEquals('endpoint2', $endpoints['endpoint2']->getKey());
+        $this->assertEquals('http', $endpoints['endpoint2']->getScheme());
+        $this->assertEquals('localhost', $endpoints['endpoint2']->getHost());
+        $this->assertEquals(123, $endpoints['endpoint2']->getPort());
+        $this->assertEquals('core2', $endpoints['endpoint2']->getCore());
 
         $this->assertTrue(isset($endpoints['endpoint3']));
-        $this->assertEquals('endpoint3', $endpoints['endpoint3']->getOption('key'));
-        $this->assertEquals('https', $endpoints['endpoint3']->getOption('scheme'));
-        $this->assertEquals('localhost', $endpoints['endpoint3']->getOption('host'));
-        $this->assertEquals('123', $endpoints['endpoint3']->getOption('port'));
-        $this->assertEquals('core3', $endpoints['endpoint3']->getOption('core'));
+        $this->assertEquals('endpoint3', $endpoints['endpoint3']->getKey());
+        $this->assertEquals('https', $endpoints['endpoint3']->getScheme());
+        $this->assertEquals('localhost', $endpoints['endpoint3']->getHost());
+        $this->assertEquals(123, $endpoints['endpoint3']->getPort());
+        $this->assertEquals('core3', $endpoints['endpoint3']->getCore());
 
     }
 
@@ -251,11 +251,11 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $this->assertEquals(1, count($container->get('solarium.client')->getEndpoints()));
 
-        $this->assertEquals('endpoint2', $endpoint->getOption('key'));
-        $this->assertEquals('http', $endpoint->getOption('scheme'));
-        $this->assertEquals('localhost', $endpoint->getOption('host'));
-        $this->assertEquals('123', $endpoint->getOption('port'));
-        $this->assertEquals('core2', $endpoint->getOption('core'));
+        $this->assertEquals('endpoint2', $endpoint->getKey());
+        $this->assertEquals('http', $endpoint->getScheme());
+        $this->assertEquals('localhost', $endpoint->getHost());
+        $this->assertEquals(123, $endpoint->getPort());
+        $this->assertEquals('core2', $endpoint->getCore());
     }
 
     public function testDefaultEndpoint()
@@ -286,10 +286,10 @@ class NelmioSolariumExtensionTest extends TestCase
         $endpoint = $container->get('solarium.client')->getEndpoint();
         $this->assertInstanceOf(Endpoint::class, $endpoint);
 
-        $this->assertEquals('endpoint2', $endpoint->getOption('key'));
-        $this->assertEquals('localhost', $endpoint->getOption('host'));
-        $this->assertEquals('123', $endpoint->getOption('port'));
-        $this->assertEquals('core2', $endpoint->getOption('core'));
+        $this->assertEquals('endpoint2', $endpoint->getKey());
+        $this->assertEquals('localhost', $endpoint->getHost());
+        $this->assertEquals(123, $endpoint->getPort());
+        $this->assertEquals('core2', $endpoint->getCore());
 
         /** @var Endpoint[] $endpoints */
         $endpoints = $container->get('solarium.client')->getEndpoints();
@@ -297,18 +297,18 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals(2, count($container->get('solarium.client')->getEndpoints()));
 
         $this->assertTrue(isset($endpoints['endpoint1']));
-        $this->assertEquals('endpoint1', $endpoints['endpoint1']->getOption('key'));
-        $this->assertEquals('http', $endpoints['endpoint1']->getOption('scheme'));
-        $this->assertEquals('localhost', $endpoints['endpoint1']->getOption('host'));
-        $this->assertEquals('123', $endpoints['endpoint1']->getOption('port'));
-        $this->assertEquals('core1', $endpoints['endpoint1']->getOption('core'));
+        $this->assertEquals('endpoint1', $endpoints['endpoint1']->getKey());
+        $this->assertEquals('http', $endpoints['endpoint1']->getScheme());
+        $this->assertEquals('localhost', $endpoints['endpoint1']->getHost());
+        $this->assertEquals(123, $endpoints['endpoint1']->getPort());
+        $this->assertEquals('core1', $endpoints['endpoint1']->getCore());
 
         $this->assertTrue(isset($endpoints['endpoint2']));
-        $this->assertEquals('endpoint2', $endpoints['endpoint2']->getOption('key'));
-        $this->assertEquals('http', $endpoints['endpoint2']->getOption('scheme'));
-        $this->assertEquals('localhost', $endpoints['endpoint2']->getOption('host'));
-        $this->assertEquals('123', $endpoints['endpoint2']->getOption('port'));
-        $this->assertEquals('core2', $endpoints['endpoint2']->getOption('core'));
+        $this->assertEquals('endpoint2', $endpoints['endpoint2']->getKey());
+        $this->assertEquals('http', $endpoints['endpoint2']->getScheme());
+        $this->assertEquals('localhost', $endpoints['endpoint2']->getHost());
+        $this->assertEquals(123, $endpoints['endpoint2']->getPort());
+        $this->assertEquals('core2', $endpoints['endpoint2']->getCore());
     }
 
     public function testClientRegistry()
