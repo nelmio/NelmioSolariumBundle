@@ -11,6 +11,7 @@
 
 namespace Nelmio\SolariumBundle\DependencyInjection;
 
+use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -19,16 +20,13 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Solarium\Plugin\Loadbalancer\Loadbalancer;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
  */
 class NelmioSolariumExtension extends Extension
 {
-    /**
-     * @param array $configs
-     * @param ContainerBuilder $container
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
@@ -59,9 +57,10 @@ class NelmioSolariumExtension extends Extension
                 $clientClass = $clientOptions['client_class'];
                 unset($clientOptions['client_class']);
             } else {
-                $clientClass = 'Solarium\Client';
+                $clientClass = Client::class;
             }
             $clientDefinition = new Definition($clientClass);
+            $clientDefinition->setPublic(true);
             $clients[$name] = new Reference($clientName);
 
             $container->setDefinition($clientName, $clientDefinition);
@@ -93,7 +92,7 @@ class NelmioSolariumExtension extends Extension
             $this->configureLoadBalancerForClient($clientName, $clientOptions, $clientDefinition, $container);
 
             //Default endpoint
-            if (isset($clientOptions['default_endpoint']) && isset($endpointReferences[$clientOptions['default_endpoint']])) {
+            if (isset($clientOptions['default_endpoint'], $endpointReferences[$clientOptions['default_endpoint']])) {
                 $clientDefinition->addMethodCall('setDefaultEndpoint', array($clientOptions['default_endpoint']));
             }
 
@@ -115,7 +114,7 @@ class NelmioSolariumExtension extends Extension
         // configure registry
         $registry = $container->getDefinition('solarium.client_registry');
         $registry->replaceArgument(0, $clients);
-        if (in_array($defaultClient, array_keys($clients))) {
+        if (array_key_exists($defaultClient, $clients)) {
             $registry->replaceArgument(1, $defaultClient);
         }
     }
@@ -136,26 +135,20 @@ class NelmioSolariumExtension extends Extension
         return $endpointReferences;
     }
 
-    /**
-     * @param string           $clientName
-     * @param ContainerBuilder $container
-     */
-    private function configureLoggerForClient($clientName, ContainerBuilder $container)
+    private function configureLoggerForClient(string $clientName, ContainerBuilder $container): void
     {
         $logger = new Reference('solarium.data_collector');
         $container->getDefinition($clientName)->addMethodCall('registerPlugin', array($clientName . '.logger', $logger));
     }
 
-    /**
-     * @param string           $clientName
-     * @param array            $clientOptions
-     * @param Definition       $clientDefinition
-     * @param ContainerBuilder $container
-     */
-    private function configureLoadBalancerForClient($clientName, array $clientOptions, Definition $clientDefinition, ContainerBuilder $container)
-    {
+    private function configureLoadBalancerForClient(
+        string $clientName,
+        array $clientOptions,
+        Definition $clientDefinition,
+        ContainerBuilder $container
+    ): void {
         if (isset($clientOptions['load_balancer']) && $clientOptions['load_balancer']['enabled']) {
-            $loadBalancerDefinition = new Definition('Solarium\Plugin\Loadbalancer\Loadbalancer');
+            $loadBalancerDefinition = new Definition(Loadbalancer::class);
             $loadBalancerDefinition
                 ->addMethodCall('addEndpoints', array($clientOptions['load_balancer']['endpoints']))
             ;
@@ -174,11 +167,7 @@ class NelmioSolariumExtension extends Extension
         }
     }
 
-    /**
-     * @param array      $clientOptions
-     * @param Definition $clientDefinition
-     */
-    private function configurePluginsForClient(array $clientOptions, Definition $clientDefinition)
+    private function configurePluginsForClient(array $clientOptions, Definition $clientDefinition): void
     {
         if (isset($clientOptions['plugins'])) {
             foreach ($clientOptions['plugins'] as $pluginName => $pluginOptions) {
