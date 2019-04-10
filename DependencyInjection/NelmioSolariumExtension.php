@@ -79,6 +79,7 @@ class NelmioSolariumExtension extends Extension
 
             if ($name == $defaultClient) {
                 $container->setAlias('solarium.client', $clientName);
+                $container->setAlias($clientClass, $clientName);
             }
 
             //If some specific endpoints are given

@@ -1,5 +1,6 @@
 ## 2.4.1 (not released yet)
   * [backport] Update Logger.php to support SF 4.x
+  * [backport] Fix autowiring deprecation on Symfony 3.3
 
 ## 2.4.0 (2017-08-17)
 
