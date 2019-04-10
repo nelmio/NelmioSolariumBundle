@@ -170,4 +170,10 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
     {
         $this->data = unserialize($data);
     }
+
+    public function reset()
+    {
+        $this->data = array();
+        $this->queries = array();
+    }
 }

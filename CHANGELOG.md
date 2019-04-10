@@ -1,3 +1,6 @@
+## 2.4.1 (not released yet)
+  * [backport] Update Logger.php to support SF 4.x
+
 ## 2.4.0 (2017-08-17)
 
  * Added symfony4 to allowed versions
