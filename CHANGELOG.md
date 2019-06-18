@@ -11,7 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 ### Security
 
-## [v3.0.0-beta.3](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta.3) - 2019-02-26
+## [v3.0.0](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0) - 2019-06-18
+### Fixed
+ - Fixed documentation on Changelog
+
+## [v3.0.0-beta.3](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/3.0.0-beta.3) - 2019-02-26
 ### Changed
  - Refactored class locations (using src and tests sub-directories)
  - Removed support for Solarium 3.x (supports for Solarium >= 4.0)
@@ -23,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [v3.0.0-beta.2](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta.2) - 2018-08-13
 ### Added
- - Addded dupport for `solariumphp/solarium` v4.x
+ - Added support for `solariumphp/solarium` v4.x
 
 ## [v3.0.0-beta](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0-beta) - 2018-01-12
 ### Changed
