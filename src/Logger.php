@@ -77,7 +77,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         );
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'solr';
     }

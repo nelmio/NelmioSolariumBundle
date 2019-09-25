@@ -51,7 +51,7 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $this->assertEquals('http', $endpoint->getScheme());
         $this->assertEquals('127.0.0.1', $endpoint->getHost());
-        $this->assertEquals('/solr', $endpoint->getPath());
+        $this->assertEquals('', $endpoint->getPath());
         $this->assertEquals(8983, $endpoint->getPort());
         $this->assertEquals('5', $endpoint->getTimeout());
     }
@@ -77,7 +77,7 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $this->assertEquals('http', $endpoint->getScheme());
         $this->assertEquals('127.0.0.1', $endpoint->getHost());
-        $this->assertEquals('/solr', $endpoint->getPath());
+        $this->assertEquals('', $endpoint->getPath());
         $this->assertEquals(8983, $endpoint->getPort());
         $this->assertEquals('5', $endpoint->getTimeout());
     }
@@ -271,6 +271,7 @@ class NelmioSolariumExtensionTest extends TestCase
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core2',
+                    'path' =>'/custom_prefix',
                 )
             ),
             'clients' => array(
@@ -302,6 +303,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('localhost', $endpoints['endpoint1']->getHost());
         $this->assertEquals(123, $endpoints['endpoint1']->getPort());
         $this->assertEquals('core1', $endpoints['endpoint1']->getCore());
+        $this->assertEquals('http://localhost:123/solr/core1/', $endpoints['endpoint1']->getCoreBaseUri());
 
         $this->assertTrue(isset($endpoints['endpoint2']));
         $this->assertEquals('endpoint2', $endpoints['endpoint2']->getKey());
@@ -309,6 +311,8 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('localhost', $endpoints['endpoint2']->getHost());
         $this->assertEquals(123, $endpoints['endpoint2']->getPort());
         $this->assertEquals('core2', $endpoints['endpoint2']->getCore());
+        $this->assertEquals('/custom_prefix', $endpoints['endpoint2']->getPath());
+        $this->assertEquals('http://localhost:123/custom_prefix/solr/core2/', $endpoints['endpoint2']->getCoreBaseUri());
     }
 
     public function testClientRegistry()
@@ -411,7 +415,6 @@ class NelmioSolariumExtensionTest extends TestCase
         /** @var Loadbalancer $loadBalancerPlugin */
         $loadBalancerPlugin = $client->getPlugin('loadbalancer');
         $this->assertInstanceOf(Loadbalancer::class, $loadBalancerPlugin);
-        $this->assertEquals($loadBalancerPlugin, $container->get('solarium.client.client1.load_balancer'));
 
         $loadBalancedEndpoints = $loadBalancerPlugin->getEndpoints();
         $this->assertCount(2, $loadBalancedEndpoints);
@@ -422,7 +425,6 @@ class NelmioSolariumExtensionTest extends TestCase
             ),
             $loadBalancedEndpoints
         );
-
     }
 
     private function createCompiledContainerForConfig($config, $debug = false, $extraServices = array())
