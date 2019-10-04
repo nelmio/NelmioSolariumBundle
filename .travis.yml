@@ -16,7 +16,7 @@ matrix:
       env: DEPENDENCIES=dev
 
 before_install:
-    - if [ "$DEPENDENCIES" = "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi;
+    - if [ "$DEPENDENCIES" = "dev" ]; then composer config minimum-stability dev; fi;
 
 install: travis_retry composer update $COMPOSER_FLAGS
 
