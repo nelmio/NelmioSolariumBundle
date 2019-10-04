@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 ### Security
 
+## [v4.0.0](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v4.0.0) - 2019-xx-xx
+### Changed
+ - Removed support for PHP 7.1
+ - Removed support for unmaintained Symfony versions
+ - Removed support for Solarium < 5
+### Fixed
+- Fixed Symfony 4.4 deprecations
+
 ## [v3.0.0](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v3.0.0) - 2019-06-18
 ### Fixed
  - Fixed documentation on Changelog
