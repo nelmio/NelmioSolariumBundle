@@ -26,10 +26,5 @@
         "psr-4": {
             "Nelmio\\SolariumBundle\\": "src/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "3.x-dev"
-        }
     }
 }
