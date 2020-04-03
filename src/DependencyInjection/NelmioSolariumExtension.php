@@ -12,7 +12,9 @@
 namespace Nelmio\SolariumBundle\DependencyInjection;
 
 use Solarium\Client;
+use Solarium\Core\Client\Adapter\Curl;
 use Solarium\Core\Client\Endpoint;
+use Solarium\Plugin\Loadbalancer\Loadbalancer;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -20,7 +22,6 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Solarium\Plugin\Loadbalancer\Loadbalancer;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
@@ -64,12 +65,13 @@ class NelmioSolariumExtension extends Extension
             $clients[$name] = new Reference($clientName);
 
             $container->setDefinition($clientName, $clientDefinition);
-            $clientDefinition->addMethodCall('setEventDispatcher', array(new Reference('event_dispatcher')));
 
             if ($name === $defaultClient) {
                 $container->setAlias('solarium.client', new Alias($clientName, true));
                 $container->setAlias($clientClass, new Alias($clientName, true));
             }
+
+            $options = [];
 
             //If some specific endpoints are given
             if ($endpointReferences) {
@@ -83,10 +85,26 @@ class NelmioSolariumExtension extends Extension
                 } else {
                     $endpoints = $endpointReferences;
                 }
-                $clientDefinition->setArguments(array(array(
-                    'endpoint' => $endpoints,
-                )));
+
+                $options['endpoint'] = $endpoints;
             }
+
+
+            if (isset($clientOptions['adapter_service'])) {
+                $adapterName = $clientOptions['adapter_service'];
+            } else {
+                $adapterName = sprintf('solarium.adapter.%s', $name);
+                $adapterDefinition = $container->register($adapterName, Curl::class);
+                if (isset($clientOptions['adapter_timeout'])) {
+                    $adapterDefinition->addMethodCall('setTimeout', [$clientOptions['adapter_timeout']]);
+                }
+            }
+
+            $clientDefinition->setArguments([
+                new Reference($adapterName),
+                new Reference('event_dispatcher'),
+                $options
+            ]);
 
             // Configure the Load-Balancer for the current client
             $this->configureLoadBalancerForClient($clientName, $clientOptions, $clientDefinition, $container);

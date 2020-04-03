@@ -1,5 +1,46 @@
 # Upgrading
 
+## Upgrading from v4.0 to v4.1
+If you were using the endpoint `timeout` options without customizing the used adapter like 
+
+```
+nelmio_solarium
+    endpoints:
+        default:
+            timeout: 10
+```
+
+Then you need to use the new `adapter_timeout` option instead:
+
+```
+nelmio_solarium
+    endpoints:
+        default: ~
+    clients:
+        default:
+            adapter_timeout: 10
+```
+
+If you were using the `adapter_class` option like
+
+```
+nelmio_solarium
+    clients:
+        default:
+            adapter_class: 'SomeCustomAdapterClass'
+```
+
+Then you need to register your custom adapter as a service and use the new `adapter_service` option:
+
+```
+nelmio_solarium
+    clients:
+        default:
+            adapter_service: 'my.custom.adapter.service'
+```
+
+Note: using `adapter_timeout` together with `adapter_service` does not work. You need to configure the timeout accordingly on your adapter service then.
+
 ## Upgrading from v3.x to v4.x
 From version 4 on this bundle requires Solarium 5. 
 In case you were using a custom `path` option for endpoints you need to adjust it. 

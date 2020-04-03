@@ -55,7 +55,6 @@ nelmio_solarium:
             port: 8983
             path: /solr
             core: active
-            timeout: 5
     clients:
         default:
             endpoints: [default]
@@ -136,7 +135,7 @@ nelmio_solarium:
             endpoints: [default, another]
 ```
 
-You can also set wich is the default endpoint
+You can also set which is the default endpoint
 
 ```yaml
 nelmio_solarium:
@@ -202,16 +201,38 @@ nelmio_solarium:
                     plugin_class: Some\Plugin\TestPlugin
 ```
 
-## Overriding Classes
+## Overriding the Client class
 
-To change the adapter or client classes, you can set the client_class and adapter_class options:
+To change the client class, you can set the client_class option:
 
 ```yaml
 nelmio_solarium:
     clients:
         default:
             client_class: Solarium\Core\Client
-            adapter_class: Solarium\Core\Client\Adapter\Http
+```
+
+## Customizing the HTTP Adapter used by the Client
+
+If you need to customize the Adapter that is used by the Client to perform HTTP requests to Solr then you can use the `adapter_service` option to specify the ID of a symfony service to be used as an adapter:
+
+```yaml
+nelmio_solarium:
+    clients:
+        default:
+            adapter_service: 'my.custom.adapter.service'
+```
+
+## HTTP Request timeout
+
+If you are using the default adapter (`Curl`) and did not customize the `adapter_service` then you can use the `adapter_timeout` option to customize the timeout.
+Solarium uses a timeout of 5 seconds by default.
+
+```yaml
+nelmio_solarium:
+    clients:
+        default:
+            adapter_timeout: 10
 ```
 
 ## License
