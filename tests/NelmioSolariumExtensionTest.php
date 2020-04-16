@@ -16,8 +16,8 @@ use Nelmio\SolariumBundle\DependencyInjection\NelmioSolariumExtension;
 use Nelmio\SolariumBundle\Logger;
 use PHPUnit\Framework\TestCase;
 use Solarium\Client;
-use Solarium\Core\Client\Adapter\Http;
 use Solarium\Core\Client\Adapter\Curl;
+use Solarium\Core\Client\Adapter\Http;
 use Solarium\Core\Client\Endpoint;
 use Solarium\Core\Event\Events;
 use Solarium\Core\Plugin\AbstractPlugin;
@@ -53,7 +53,6 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('127.0.0.1', $endpoint->getHost());
         $this->assertEquals('', $endpoint->getPath());
         $this->assertEquals(8983, $endpoint->getPort());
-        $this->assertEquals('5', $endpoint->getTimeout());
     }
 
     public function testNoClients()
@@ -79,10 +78,12 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('127.0.0.1', $endpoint->getHost());
         $this->assertEquals('', $endpoint->getPath());
         $this->assertEquals(8983, $endpoint->getPort());
-        $this->assertEquals('5', $endpoint->getTimeout());
     }
 
-    public function testLoadCustomAdapter()
+    /**
+     * @group legacy
+     */
+    public function testLoadCustomAdapterWithDeprecatedClassOption()
     {
         $adapter = $this->createMock(Http::class);
         $adapterClass = get_class($adapter);
@@ -218,7 +219,6 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('localhost', $endpoints['endpoint3']->getHost());
         $this->assertEquals(123, $endpoints['endpoint3']->getPort());
         $this->assertEquals('core3', $endpoints['endpoint3']->getCore());
-
     }
 
     public function testSpecificEndpoints()
@@ -256,6 +256,29 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('localhost', $endpoint->getHost());
         $this->assertEquals(123, $endpoint->getPort());
         $this->assertEquals('core2', $endpoint->getCore());
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testDeprecatedEndpointTimeout()
+    {
+        $config = array(
+            'endpoints' => array(
+                'endpoint1' => array(
+                    'timeout' => 33,
+                ),
+            ),
+            'clients' => array(
+                'client1' => array(
+                    'endpoints' => array('endpoint1'),
+                )
+            ),
+        );
+
+        $container = $this->createCompiledContainerForConfig($config);
+        $endpoint = $container->get('solarium.client')->getEndpoint();
+        $this->assertSame(33, $endpoint->getTimeout());
     }
 
     public function testDefaultEndpoint()
@@ -427,6 +450,51 @@ class NelmioSolariumExtensionTest extends TestCase
         );
     }
 
+    public function testAdapterTimeout(): void
+    {
+        $config = [
+            'clients' => [
+                'default' => [
+                    'adapter_timeout' => 10,
+                ]
+            ]
+        ];
+
+        $container = $this->createCompiledContainerForConfig($config);
+        $this->assertInstanceOf(Curl::class, $container->get('solarium.client')->getAdapter());
+        $this->assertSame(10, $container->get('solarium.client')->getAdapter()->getTimeout());
+    }
+
+    public function testAdapterService(): void
+    {
+        $config = [
+            'clients' => [
+                'default' => [
+                    'adapter_service' => 'foo',
+                ]
+            ]
+        ];
+
+        $container = $this->createCompiledContainerForConfig($config, false, ['foo' => new Definition(Http::class)]);
+
+        $this->assertInstanceOf(Http::class, $container->get('solarium.client')->getAdapter());
+    }
+
+    public function testAdapterTimeoutAndServiceNotSupported(): void
+    {
+        $config = [
+            'clients' => [
+                'default' => [
+                    'adapter_timeout' => 10,
+                    'adapter_service' => 'foo',
+                ]
+            ]
+        ];
+
+        $this->expectExceptionMessage('Setting "adapter_timeout" is only supported for the default adapter and not in combination with "adapter_service"');
+        $this->createCompiledContainerForConfig($config);
+    }
+
     private function createCompiledContainerForConfig($config, $debug = false, $extraServices = array())
     {
         $container = $this->createContainer($debug);
@@ -464,6 +532,6 @@ class StubClient extends Client
 {
 }
 
-class MyPluginClass extends AbstractPlugin {
-
+class MyPluginClass extends AbstractPlugin
+{
 }

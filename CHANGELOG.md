@@ -6,9 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Added `adapter_service` and `adapter_timeout` configuration options
 ### Deprecated
+- Deprecated the `adapter_class` configuration option. Use `adapter_service` instead for custom adapters.
+- Deprecated the `timeout` option for endpoints. Configure the timeout on the client using `adapter_timeout` or configure your custom adapter service accordingly.
 ### Changed
+- Removed Symfony 3.4 support
+- Removed Symfony 4.2 support
+- Require Solarium ^5.2
 ### Fixed
+- Fixed deprecations introduced in Solarium 5.2
 ### Security
 
 ## [v4.0.0-rc.1](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v4.0.0-rc.1) - 2019-12-16
