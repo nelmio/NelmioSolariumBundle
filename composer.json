@@ -20,7 +20,7 @@
         "solarium/solarium": "^5.0"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^4.3 || ^5.0"
+        "symfony/phpunit-bridge": "^5.0"
     },
     "autoload": {
         "psr-4": {
