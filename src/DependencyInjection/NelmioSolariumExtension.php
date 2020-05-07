@@ -12,6 +12,7 @@
 namespace Nelmio\SolariumBundle\DependencyInjection;
 
 use Solarium\Client;
+use Solarium\Core\Client\Adapter\Curl;
 use Solarium\Core\Client\Endpoint;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -53,18 +54,14 @@ class NelmioSolariumExtension extends Extension
         foreach ($config['clients'] as $name => $clientOptions) {
             $clientName = sprintf('solarium.client.%s', $name);
 
-            if (isset($clientOptions['client_class'])) {
-                $clientClass = $clientOptions['client_class'];
-                unset($clientOptions['client_class']);
-            } else {
-                $clientClass = Client::class;
-            }
-            $clientDefinition = new Definition($clientClass);
+            $clientClass = $clientOptions['client_class'] ?? Client::class;
+            $adapterReference = $this->configureAdapter($name, $clientOptions, $container);
+
+            $clientDefinition = new Definition($clientClass, [$adapterReference, new Reference('event_dispatcher')]);
             $clientDefinition->setPublic(true);
             $clients[$name] = new Reference($clientName);
 
             $container->setDefinition($clientName, $clientDefinition);
-            $clientDefinition->addMethodCall('setEventDispatcher', array(new Reference('event_dispatcher')));
 
             if ($name === $defaultClient) {
                 $container->setAlias('solarium.client', new Alias($clientName, true));
@@ -83,9 +80,8 @@ class NelmioSolariumExtension extends Extension
                 } else {
                     $endpoints = $endpointReferences;
                 }
-                $clientDefinition->setArguments(array(array(
-                    'endpoint' => $endpoints,
-                )));
+
+                $clientDefinition->addMethodCall('setEndpoints', [$endpoints]);
             }
 
             // Configure the Load-Balancer for the current client
@@ -94,11 +90,6 @@ class NelmioSolariumExtension extends Extension
             //Default endpoint
             if (isset($clientOptions['default_endpoint'], $endpointReferences[$clientOptions['default_endpoint']])) {
                 $clientDefinition->addMethodCall('setDefaultEndpoint', array($clientOptions['default_endpoint']));
-            }
-
-            //Add the optional adapter class
-            if (isset($clientOptions['adapter_class'])) {
-                $clientDefinition->addMethodCall('setAdapter', array($clientOptions['adapter_class']));
             }
 
             // Configure the Plugins for the current client
@@ -117,6 +108,20 @@ class NelmioSolariumExtension extends Extension
         if (array_key_exists($defaultClient, $clients)) {
             $registry->replaceArgument(1, $defaultClient);
         }
+    }
+
+    private function configureAdapter(string $name, array $config, ContainerBuilder $container): Reference
+    {
+        $adapterName = sprintf('solarium.client.adapter.%s', $name);
+        $adapterClass = $config['adapter_class'] ?? Curl::class;
+
+        if (false === $container->hasDefinition($adapterName)) {
+            $container
+                ->setDefinition($adapterName, new Definition($adapterClass))
+            ;
+        }
+
+        return new Reference($adapterName);
     }
 
     private function configureEndpoints(array $endpoints, ContainerBuilder $container): array
