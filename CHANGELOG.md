@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 ### Deprecated
 ### Changed
+ - Add support for Symfony v5.x [#PR-98](https://github.com/nelmio/NelmioSolariumBundle/pull/98)
 ### Fixed
 ### Security
 
