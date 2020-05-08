@@ -6,10 +6,6 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Nelmio",
-            "homepage": "http://nelm.io"
-        },
-        {
             "name": "Symfony Community",
             "homepage": "https://github.com/nelmio/NelmioSolariumBundle/contributors"
         }
@@ -25,11 +21,6 @@
     "autoload": {
         "psr-4": {
             "Nelmio\\SolariumBundle\\": "src/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "4.x-dev"
         }
     }
 }
