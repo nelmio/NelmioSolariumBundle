@@ -42,6 +42,9 @@ Gives you a Solarium_Client service with default options (`http://localhost:8983
 
 ```php
     $client = $this->get('solarium.client');
+    
+    public function __construct(\Solarium\Client $client) {
+    }
 ```
 
 Configure your endpoints in config.yml:
@@ -92,7 +95,12 @@ nelmio_solarium:
 ```php
     $defaultClient = $this->get('solarium.client');
     $anotherClient = $this->get('solarium.client.another');
+
+    public function __construct(\Solarium\Client $defaultClient, \Solarium\Client $anotherClient) {
+    }
 ```
+
+While the `default` client can have any parameter name, for other clients the convention is `{$client_name}Client`.
 
 You may also change `default` name with your own, but don't forget change `default_client` option if you want to get access to
 `solarium.client` service
@@ -118,6 +126,9 @@ nelmio_solarium:
     $firstOneClient = $this->get('solarium.client.firstOne');
 
     $anotherOneClient = $this->get('solarium.client.anotherOne');
+
+    public function __construct(\Solarium\Client $firstOneClient, \Solarium\Client $anotherOneClient) {
+    }
 ```
 
 Starting from Solarium 3.x you can also have multiple endpoints within the same client

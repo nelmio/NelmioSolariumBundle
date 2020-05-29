@@ -69,6 +69,8 @@ class NelmioSolariumExtension extends Extension
             if ($name === $defaultClient) {
                 $container->setAlias('solarium.client', new Alias($clientName, true));
                 $container->setAlias($clientClass, new Alias($clientName, true));
+            } elseif (method_exists($container, 'registerAliasForArgument')) {
+                $container->registerAliasForArgument($clientName, $clientClass, $name.'Client')->setPublic(false);
             }
 
             $options = [];
