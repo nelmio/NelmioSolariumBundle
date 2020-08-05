@@ -20,6 +20,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
+    const COMPOSER_PACKAGE_NAME = "nelmio/solarium-bundle";
+
     /**
      * {@inheritDoc}
      */
@@ -27,12 +29,7 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('nelmio_solarium');
 
-        if (method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // BC layer for symfony/config < 4.2
-            $rootNode = $treeBuilder->root('nelmio_solarium');
-        }
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
@@ -49,7 +46,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('path')->defaultValue('/')->end()
                             ->scalarNode('core')->end()
                             ->scalarNode('timeout')
-                                ->setDeprecated('Configuring a timeout per endpoint is deprecated. Configure the timeout on the client adapter instead.')
+                                ->setDeprecated(self::COMPOSER_PACKAGE_NAME, '5.0', 'Configuring a timeout per endpoint is deprecated. Configure the timeout on the client adapter instead.')
                             ->end()
                         ->end()
                     ->end()
@@ -74,7 +71,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('client_class')->cannotBeEmpty()->defaultValue(Client::class)->end()
                             ->scalarNode('adapter_class')
-                                ->setDeprecated('Configuring an adapter class is deprecated. Configure an adapter service instead.')
+                                ->setDeprecated(self::COMPOSER_PACKAGE_NAME, '5.0', 'Configuring an adapter class is deprecated. Configure an adapter service instead.')
                             ->end()
                             ->scalarNode('adapter_timeout')->end()
                             ->scalarNode('adapter_service')->end()
