@@ -23,7 +23,6 @@ use Solarium\Core\Event\Events;
 use Solarium\Core\Plugin\AbstractPlugin;
 use Solarium\Plugin\Loadbalancer\Loadbalancer;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
