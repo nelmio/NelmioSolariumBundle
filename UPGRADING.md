@@ -1,5 +1,9 @@
 # Upgrading
 
+## Upgrading from v4.x to v5.0
+The deprecated `timeout` and `adapter_class` options have been removed as they are not supported with Solarium 6.
+See [here](#upgrading-from-v40-to-v41) on how to remove usages of those options.
+
 ## Upgrading from v4.0 to v4.1
 If you were using the endpoint `timeout` options without customizing the used adapter like 
 
