@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Added compatibility with Solarium ^6.1
 - Added support for PHP 8
+- Added support for Symfony 6
 ### Changed
 - Dropped support for Solarium 5
 - Dropped support for PHP 7.2
