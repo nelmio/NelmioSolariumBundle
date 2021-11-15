@@ -39,6 +39,8 @@ nelmio_solarium
             adapter_service: 'my.custom.adapter.service'
 ```
 
+**Both options `timeout` and `adapter_class` are not supported anymore when using Solarium 6.**
+
 Note: using `adapter_timeout` together with `adapter_service` does not work. You need to configure the timeout accordingly on your adapter service then.
 
 ## Upgrading from v3.x to v4.x
