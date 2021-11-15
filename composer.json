@@ -11,9 +11,9 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^7.3 || ^8.0",
         "symfony/framework-bundle": "^4.4 || ^5.3",
-        "solarium/solarium": "^5.2 || ^6.1"
+        "solarium/solarium": "^6.1"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^5.3"

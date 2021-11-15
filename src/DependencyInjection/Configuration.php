@@ -12,7 +12,6 @@
 namespace Nelmio\SolariumBundle\DependencyInjection;
 
 use Solarium\Client;
-use Symfony\Component\Config\Definition\BaseNode;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -43,17 +42,6 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('port')->defaultValue(8983)->end()
                             ->scalarNode('path')->defaultValue('/')->end()
                             ->scalarNode('core')->end()
-                            ->scalarNode('timeout')
-                                ->setDeprecated(
-                                    ...$this->getDeprecationMsg('Configuring a timeout per endpoint is deprecated. Configure the timeout on the client adapter instead.', '4.1')
-                                )
-                                ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return $v !== null && version_compare(Client::VERSION, '6.0', '>=');
-                                    })
-                                    ->thenInvalid('Configuring a timeout per endpoint is not supported by Solarium >= 6.0. Configure the timeout on the client adapter instead or require Solarium ^5.0.')
-                                ->end()
-                            ->end()
                         ->end()
                     ->end()
                 ->end()
@@ -68,25 +56,8 @@ class Configuration implements ConfigurationInterface
                             })
                             ->thenInvalid('Setting "adapter_timeout" is only supported for the default adapter and not in combination with "adapter_service".')
                         ->end()
-                        ->validate()
-                            ->ifTrue(function ($v) {
-                                return !empty($v['adapter_class']) && !empty($v['adapter_service']);
-                            })
-                            ->thenInvalid('Only either "adapter_timeout" or "adapter_class" can be set')
-                        ->end()
                         ->children()
                             ->scalarNode('client_class')->cannotBeEmpty()->defaultValue(Client::class)->end()
-                            ->scalarNode('adapter_class')
-                                ->setDeprecated(
-                                    ...$this->getDeprecationMsg('Configuring an adapter class is deprecated. Configure an adapter service instead.', '4.1')
-                                )
-                                ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return $v !== null && version_compare(Client::VERSION, '6.0', '>=');
-                                    })
-                                    ->thenInvalid('Configuring an "adapter_class" is not supported by Solarium >= 6.0. Configure an adapter service instead or require Solarium ^5.0.')
-                                ->end()
-                            ->end()
                             ->scalarNode('adapter_timeout')->end()
                             ->scalarNode('adapter_service')->end()
                             ->arrayNode('endpoints')
@@ -175,28 +146,5 @@ class Configuration implements ConfigurationInterface
         return function ($endpointList) {
             return preg_split('/\s*,\s*/', $endpointList);
         };
-    }
-
-    /**
-     * Returns the correct deprecation param's as an array for setDeprecated.
-     *
-     * Symfony/Config v5.1 introduces a deprecation notice when calling
-     * setDeprecation() with less than 3 args and the getDeprecation method was
-     * introduced at the same time. By checking if getDeprecation() exists,
-     * we can determine the correct param count to use when calling setDeprecated.
-     *
-     * @return string[]
-     */
-    private function getDeprecationMsg(string $message, string $version): array
-    {
-        if (method_exists(BaseNode::class, 'getDeprecation')) {
-            return [
-                'nelmio/solarium-bundle',
-                $version,
-                $message,
-            ];
-        }
-
-        return [$message];
     }
 }

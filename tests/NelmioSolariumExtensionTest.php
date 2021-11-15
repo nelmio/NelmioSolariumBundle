@@ -81,33 +81,6 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals(8983, $endpoint->getPort());
     }
 
-    /**
-     * @group legacy
-     */
-    public function testLoadCustomAdapterWithDeprecatedClassOption()
-    {
-        $adapter = $this->createMock(Http::class);
-        $adapterClass = get_class($adapter);
-
-        $config = array(
-            'clients' => array(
-                'default' => array(
-                    'adapter_class' => $adapterClass
-                )
-            )
-        );
-
-        if (version_compare(Client::VERSION, '6.0', '>=')) {
-            $this->expectException(InvalidConfigurationException::class);
-            $this->expectExceptionMessage('Invalid configuration for path "nelmio_solarium.clients.default.adapter_class": Configuring an "adapter_class" is not supported by Solarium >= 6.0. Configure an adapter service instead or require Solarium ^5.0.');
-        }
-
-        $container = $this->createCompiledContainerForConfig($config);
-
-        $this->assertInstanceOf(Client::class, $container->get('solarium.client'));
-        $this->assertInstanceOf(Http::class, $container->get('solarium.client')->getAdapter());
-    }
-
     public function testLoadCustomClient()
     {
         $config = array(
@@ -262,34 +235,6 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('localhost', $endpoint->getHost());
         $this->assertEquals(123, $endpoint->getPort());
         $this->assertEquals('core2', $endpoint->getCore());
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testDeprecatedEndpointTimeout()
-    {
-        $config = array(
-            'endpoints' => array(
-                'endpoint1' => array(
-                    'timeout' => 33,
-                ),
-            ),
-            'clients' => array(
-                'client1' => array(
-                    'endpoints' => array('endpoint1'),
-                )
-            ),
-        );
-
-        if (version_compare(Client::VERSION, '6.0', '>=')) {
-            $this->expectException(InvalidConfigurationException::class);
-            $this->expectExceptionMessage('Invalid configuration for path "nelmio_solarium.endpoints.endpoint1.timeout": Configuring a timeout per endpoint is not supported by Solarium >= 6.0. Configure the timeout on the client adapter instead or require Solarium ^5.0.');
-        }
-
-        $container = $this->createCompiledContainerForConfig($config);
-        $endpoint = $container->get('solarium.client')->getEndpoint();
-        $this->assertSame(33, $endpoint->getTimeout());
     }
 
     public function testDefaultEndpoint()
