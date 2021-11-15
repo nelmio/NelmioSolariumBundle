@@ -515,6 +515,8 @@ class NelmioSolariumExtensionTest extends TestCase
             'kernel.charset'         => 'UTF-8',
             'kernel.debug'           => $debug,
             'kernel.container_class' => 'dummy',
+            'kernel.project_dir'     => __DIR__,
+            'kernel.build_dir'       => __DIR__,
         )));
 
         return $container;
