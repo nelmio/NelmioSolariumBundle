@@ -6,9 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Added `adapter_service` and `adapter_timeout` configuration options
 - Added compatibility with Solarium ^6.1
 - Added support for PHP 8
+### Deprecated
+### Changed
+- Dropped support for Solarium 5
+- Dropped support for PHP 7.2
+### Fixed
+
+## [v4.1.0](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v4.1.0) - 2021-11-15
+### Added
+- Added `adapter_service` and `adapter_timeout` configuration options
 ### Deprecated
 - Deprecated the `adapter_class` configuration option. Use `adapter_service` instead for custom adapters.
 - Deprecated the `timeout` option for endpoints. Configure the timeout on the client using `adapter_timeout` or configure your custom adapter service accordingly.

@@ -237,6 +237,29 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('core2', $endpoint->getCore());
     }
 
+    /**
+     * @group legacy
+     */
+    public function testDeprecatedEndpointTimeout()
+    {
+        $config = array(
+            'endpoints' => array(
+                'endpoint1' => array(
+                    'timeout' => 33,
+                ),
+            ),
+            'clients' => array(
+                'client1' => array(
+                    'endpoints' => array('endpoint1'),
+                )
+            ),
+        );
+
+        $container = $this->createCompiledContainerForConfig($config);
+        $endpoint = $container->get('solarium.client')->getEndpoint();
+        $this->assertSame(33, $endpoint->getTimeout());
+    }
+
     public function testDefaultEndpoint()
     {
         $config = array(
