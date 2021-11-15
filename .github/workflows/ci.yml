@@ -11,10 +11,12 @@ jobs:
             matrix:
                 include:
                 -   php: 7.2
+                    solarium-require: "^5.2"
                 -   php: 7.3
                     SYMFONY_REQUIRE: 4.4.*
                 -   php: 7.4
                     SYMFONY_REQUIRE: 5.3.*
+                    solarium-require: "^6.1"
         
         steps:
         -   uses: actions/checkout@v2
@@ -36,6 +38,10 @@ jobs:
             env:
                 SYMFONY_REQUIRE: "${{ matrix.SYMFONY_REQUIRE }}"
             run: composer update ${{ matrix.composer-flags }} --prefer-dist
+
+        -   name: Install specific Solarium version
+            if: matrix.solarium-require
+            run: composer req solarium/solarium ${{ matrix.solarium-require }}
         
         -   name: Phpunit
             run: ./vendor/bin/simple-phpunit

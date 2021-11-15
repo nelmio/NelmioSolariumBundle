@@ -47,6 +47,12 @@ class Configuration implements ConfigurationInterface
                                 ->setDeprecated(
                                     ...$this->getDeprecationMsg('Configuring a timeout per endpoint is deprecated. Configure the timeout on the client adapter instead.', '4.1')
                                 )
+                                ->validate()
+                                    ->ifTrue(function ($v) {
+                                        return $v !== null && version_compare(Client::VERSION, '6.0', '>=');
+                                    })
+                                    ->thenInvalid('Configuring a timeout per endpoint is not supported by Solarium >= 6.0. Configure the timeout on the client adapter instead.')
+                                ->end()
                             ->end()
                         ->end()
                     ->end()
@@ -74,6 +80,12 @@ class Configuration implements ConfigurationInterface
                                 ->setDeprecated(
                                     ...$this->getDeprecationMsg('Configuring an adapter class is deprecated. Configure an adapter service instead.', '4.1')
                                 )
+                                ->validate()
+                                    ->ifTrue(function ($v) {
+                                        return $v !== null && version_compare(Client::VERSION, '6.0', '>=');
+                                    })
+                                    ->thenInvalid('Configuring an "adapter_class" is not supported by Solarium >= 6.0. Configure an adapter service instead.')
+                                ->end()
                             ->end()
                             ->scalarNode('adapter_timeout')->end()
                             ->scalarNode('adapter_service')->end()

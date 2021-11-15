@@ -9,6 +9,7 @@ use Solarium\Core\Plugin\AbstractPlugin as SolariumPlugin;
 use Solarium\Core\Event\Events as SolariumEvents;
 use Solarium\Core\Event\PreExecuteRequest as SolariumPreExecuteRequestEvent;
 use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
@@ -35,8 +36,10 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
     {
         $dispatcher = $this->client->getEventDispatcher();
         if (!in_array($dispatcher, $this->eventDispatchers, true)) {
-            $dispatcher->addListener(SolariumEvents::PRE_EXECUTE_REQUEST, array($this, 'preExecuteRequest'), 1000);
-            $dispatcher->addListener(SolariumEvents::POST_EXECUTE_REQUEST, array($this, 'postExecuteRequest'), -1000);
+            if ($dispatcher instanceof EventDispatcherInterface) {
+                $dispatcher->addListener(SolariumEvents::PRE_EXECUTE_REQUEST, array($this, 'preExecuteRequest'), 1000);
+                $dispatcher->addListener(SolariumEvents::POST_EXECUTE_REQUEST, array($this, 'postExecuteRequest'), -1000);
+            }
             $this->eventDispatchers[] = $dispatcher;
         }
     }
