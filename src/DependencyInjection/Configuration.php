@@ -12,6 +12,7 @@
 namespace Nelmio\SolariumBundle\DependencyInjection;
 
 use Solarium\Client;
+use Symfony\Component\Config\Definition\BaseNode;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -49,7 +50,9 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('path')->defaultValue('/')->end()
                             ->scalarNode('core')->end()
                             ->scalarNode('timeout')
-                                ->setDeprecated('Configuring a timeout per endpoint is deprecated. Configure the timeout on the client adapter instead.')
+                                ->setDeprecated(
+                                    ...$this->getDeprecationMsg('Configuring a timeout per endpoint is deprecated. Configure the timeout on the client adapter instead.', '4.1')
+                                )
                             ->end()
                         ->end()
                     ->end()
@@ -74,7 +77,9 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('client_class')->cannotBeEmpty()->defaultValue(Client::class)->end()
                             ->scalarNode('adapter_class')
-                                ->setDeprecated('Configuring an adapter class is deprecated. Configure an adapter service instead.')
+                                ->setDeprecated(
+                                    ...$this->getDeprecationMsg('Configuring an adapter class is deprecated. Configure an adapter service instead.', '4.1')
+                                )
                             ->end()
                             ->scalarNode('adapter_timeout')->end()
                             ->scalarNode('adapter_service')->end()
@@ -164,5 +169,28 @@ class Configuration implements ConfigurationInterface
         return function ($endpointList) {
             return preg_split('/\s*,\s*/', $endpointList);
         };
+    }
+
+    /**
+     * Returns the correct deprecation param's as an array for setDeprecated.
+     *
+     * Symfony/Config v5.1 introduces a deprecation notice when calling
+     * setDeprecation() with less than 3 args and the getDeprecation method was
+     * introduced at the same time. By checking if getDeprecation() exists,
+     * we can determine the correct param count to use when calling setDeprecated.
+     *
+     * @return string[]
+     */
+    private function getDeprecationMsg(string $message, string $version): array
+    {
+        if (method_exists(BaseNode::class, 'getDeprecation')) {
+            return [
+                'nelmio/solarium-bundle',
+                $version,
+                $message,
+            ];
+        }
+
+        return [$message];
     }
 }
