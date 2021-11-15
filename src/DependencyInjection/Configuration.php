@@ -51,7 +51,7 @@ class Configuration implements ConfigurationInterface
                                     ->ifTrue(function ($v) {
                                         return $v !== null && version_compare(Client::VERSION, '6.0', '>=');
                                     })
-                                    ->thenInvalid('Configuring a timeout per endpoint is not supported by Solarium >= 6.0. Configure the timeout on the client adapter instead.')
+                                    ->thenInvalid('Configuring a timeout per endpoint is not supported by Solarium >= 6.0. Configure the timeout on the client adapter instead or require Solarium ^5.0.')
                                 ->end()
                             ->end()
                         ->end()
@@ -84,7 +84,7 @@ class Configuration implements ConfigurationInterface
                                     ->ifTrue(function ($v) {
                                         return $v !== null && version_compare(Client::VERSION, '6.0', '>=');
                                     })
-                                    ->thenInvalid('Configuring an "adapter_class" is not supported by Solarium >= 6.0. Configure an adapter service instead.')
+                                    ->thenInvalid('Configuring an "adapter_class" is not supported by Solarium >= 6.0. Configure an adapter service instead or require Solarium ^5.0.')
                                 ->end()
                             ->end()
                             ->scalarNode('adapter_timeout')->end()

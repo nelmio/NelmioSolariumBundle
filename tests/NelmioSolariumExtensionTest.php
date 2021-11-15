@@ -99,7 +99,7 @@ class NelmioSolariumExtensionTest extends TestCase
 
         if (version_compare(Client::VERSION, '6.0', '>=')) {
             $this->expectException(InvalidConfigurationException::class);
-            $this->expectExceptionMessage('Invalid configuration for path "nelmio_solarium.clients.default.adapter_class": Configuring an "adapter_class" is not supported by Solarium >= 6.0. Configure an adapter service instead.');
+            $this->expectExceptionMessage('Invalid configuration for path "nelmio_solarium.clients.default.adapter_class": Configuring an "adapter_class" is not supported by Solarium >= 6.0. Configure an adapter service instead or require Solarium ^5.0.');
         }
 
         $container = $this->createCompiledContainerForConfig($config);
@@ -284,7 +284,7 @@ class NelmioSolariumExtensionTest extends TestCase
 
         if (version_compare(Client::VERSION, '6.0', '>=')) {
             $this->expectException(InvalidConfigurationException::class);
-            $this->expectExceptionMessage('Invalid configuration for path "nelmio_solarium.endpoints.endpoint1.timeout": Configuring a timeout per endpoint is not supported by Solarium >= 6.0. Configure the timeout on the client adapter instead.');
+            $this->expectExceptionMessage('Invalid configuration for path "nelmio_solarium.endpoints.endpoint1.timeout": Configuring a timeout per endpoint is not supported by Solarium >= 6.0. Configure the timeout on the client adapter instead or require Solarium ^5.0.');
         }
 
         $container = $this->createCompiledContainerForConfig($config);
