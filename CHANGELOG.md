@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+### Deprecated
+### Changed
+### Fixed
+### Security
+
+## [v5.0.0](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v5.0.0) - 2021-11-16
+### Added
 - Added compatibility with Solarium ^6.1
 - Added support for PHP 8
 - Added support for Symfony 6
