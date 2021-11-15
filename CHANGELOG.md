@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Added `adapter_service` and `adapter_timeout` configuration options
 - Added compatibility with Solarium ^6.1
+- Added support for PHP 8
 ### Deprecated
 - Deprecated the `adapter_class` configuration option. Use `adapter_service` instead for custom adapters.
 - Deprecated the `timeout` option for endpoints. Configure the timeout on the client using `adapter_timeout` or configure your custom adapter service accordingly.
