@@ -171,6 +171,16 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         $this->queries = array();
     }
 
+    public function __serialize(): array
+    {
+        return $this->data;
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->data = $data;
+    }
+
     private function getEndpointBaseUrl(SolariumEndpoint $endpoint): string
     {
         // Support for Solarium v4.2: getBaseUri() has been deprecated in favor of getCoreBaseUri()

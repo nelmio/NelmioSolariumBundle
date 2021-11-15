@@ -17,7 +17,9 @@ jobs:
                 -   php: 7.4
                     SYMFONY_REQUIRE: 5.3.*
                     solarium-require: "^6.1"
-        
+                -   php: 8.0
+                -   php: 8.1
+
         steps:
         -   uses: actions/checkout@v2
         
