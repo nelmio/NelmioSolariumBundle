@@ -12,7 +12,6 @@
 namespace Nelmio\SolariumBundle\DependencyInjection;
 
 use Solarium\Client;
-use Symfony\Component\Config\Definition\BaseNode;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -147,28 +146,5 @@ class Configuration implements ConfigurationInterface
         return function ($endpointList) {
             return preg_split('/\s*,\s*/', $endpointList);
         };
-    }
-
-    /**
-     * Returns the correct deprecation param's as an array for setDeprecated.
-     *
-     * Symfony/Config v5.1 introduces a deprecation notice when calling
-     * setDeprecation() with less than 3 args and the getDeprecation method was
-     * introduced at the same time. By checking if getDeprecation() exists,
-     * we can determine the correct param count to use when calling setDeprecated.
-     *
-     * @return string[]
-     */
-    private function getDeprecationMsg(string $message, string $version): array
-    {
-        if (method_exists(BaseNode::class, 'getDeprecation')) {
-            return [
-                'nelmio/solarium-bundle',
-                $version,
-                $message,
-            ];
-        }
-
-        return [$message];
     }
 }
