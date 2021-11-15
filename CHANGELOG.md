@@ -11,8 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Deprecated the `adapter_class` configuration option. Use `adapter_service` instead for custom adapters.
 - Deprecated the `timeout` option for endpoints. Configure the timeout on the client using `adapter_timeout` or configure your custom adapter service accordingly.
 ### Changed
-- Remove support for Symfony 3.x
-- Remove support for Symfony <= 4.3
+- Removed support for Symfony <= 4.4, 5.0, 5.1 and 5.2
 - Require Solarium ^5.2
 ### Fixed
 - Fixed deprecations introduced in Solarium 5.2
