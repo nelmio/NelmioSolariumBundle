@@ -456,7 +456,9 @@ class NelmioSolariumExtensionTest extends TestCase
         $container->registerExtension(new FrameworkExtension());
         $container->addDefinitions($extraServices);
         $container->registerExtension(new NelmioSolariumExtension());
-        $container->loadFromExtension('framework', array());
+        $container->loadFromExtension('framework', [
+            'http_method_override' => false,
+        ]);
         $container->loadFromExtension('nelmio_solarium', $config);
         $this->compileContainer($container);
 
@@ -472,6 +474,7 @@ class NelmioSolariumExtensionTest extends TestCase
             'kernel.container_class' => 'dummy',
             'kernel.project_dir'     => __DIR__,
             'kernel.build_dir'       => __DIR__,
+            'debug.file_link_format' => 'foo',
         )));
 
         return $container;
