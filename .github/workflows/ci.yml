@@ -11,13 +11,11 @@ jobs:
             matrix:
                 include:
                 -   php: 7.3
-                    SYMFONY_REQUIRE: 4.4.*
                 -   php: 7.4
                     SYMFONY_REQUIRE: 5.4.*
                 -   php: 8.0
-                    SYMFONY_REQUIRE: 6.0.*
                 -   php: 8.1
-                    SYMFONY_REQUIRE: 6.1.*
+                -   php: 8.2
 
         steps:
         -   uses: actions/checkout@v2

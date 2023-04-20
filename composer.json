@@ -12,11 +12,12 @@
     ],
     "require": {
         "php": "^7.3 || ^8.0",
-        "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0",
-        "solarium/solarium": "^6.1"
+        "symfony/framework-bundle": "^5.4 || ^6.2",
+        "solarium/solarium": "^6.2"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^6.1"
+        "symfony/phpunit-bridge": "^6.2",
+        "symfony/stopwatch": "^5.4 || ^6.2"
     },
     "autoload": {
         "psr-4": {
