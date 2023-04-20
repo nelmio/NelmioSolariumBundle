@@ -165,6 +165,9 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         $this->data = unserialize($data);
     }
 
+    /**
+     * @return void
+     */
     public function reset()
     {
         $this->data = array();

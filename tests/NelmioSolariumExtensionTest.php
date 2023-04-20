@@ -467,7 +467,7 @@ class NelmioSolariumExtensionTest extends TestCase
 
     private function createContainer($debug = false)
     {
-        $container = new ContainerBuilder(new ParameterBag(array(
+        return new ContainerBuilder(new ParameterBag(array(
             'kernel.cache_dir'       => __DIR__,
             'kernel.charset'         => 'UTF-8',
             'kernel.debug'           => $debug,
@@ -476,8 +476,6 @@ class NelmioSolariumExtensionTest extends TestCase
             'kernel.build_dir'       => __DIR__,
             'debug.file_link_format' => 'foo',
         )));
-
-        return $container;
     }
 
     private function compileContainer(ContainerBuilder $container)
