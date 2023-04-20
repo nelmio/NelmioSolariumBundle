@@ -42,7 +42,7 @@ class NelmioSolariumExtension extends Extension
 
         $defaultClient = $config['default_client'];
         if (!count($config['clients'])) {
-            $config['clients'][$defaultClient] = array();
+            $config['clients'][$defaultClient] = [];
         } elseif (count($config['clients']) === 1) {
             $defaultClient = key($config['clients']);
         }
@@ -50,7 +50,7 @@ class NelmioSolariumExtension extends Extension
         // Configure the Solarium endpoints
         $endpointReferences = $this->configureEndpoints($config['endpoints'], $container);
 
-        $clients = array();
+        $clients = [];
         foreach ($config['clients'] as $name => $clientOptions) {
             $clientName = sprintf('solarium.client.%s', $name);
 
@@ -73,10 +73,10 @@ class NelmioSolariumExtension extends Extension
 
             $options = [];
 
-            //If some specific endpoints are given
+            // If some specific endpoints are given
             if ($endpointReferences) {
                 if (isset($clientOptions['endpoints']) && !empty($clientOptions['endpoints'])) {
-                    $endpoints = array();
+                    $endpoints = [];
                     foreach ($clientOptions['endpoints'] as $endpointName) {
                         if (isset($endpointReferences[$endpointName])) {
                             $endpoints[] = $endpointReferences[$endpointName];
@@ -88,7 +88,6 @@ class NelmioSolariumExtension extends Extension
 
                 $options['endpoint'] = $endpoints;
             }
-
 
             if (isset($clientOptions['adapter_service'])) {
                 $adapterName = $clientOptions['adapter_service'];
@@ -103,25 +102,24 @@ class NelmioSolariumExtension extends Extension
             $clientDefinition->setArguments([
                 new Reference($adapterName),
                 new Reference('event_dispatcher'),
-                $options
+                $options,
             ]);
 
             // Configure the Load-Balancer for the current client
             $this->configureLoadBalancerForClient($clientName, $clientOptions, $clientDefinition, $container);
 
-            //Default endpoint
+            // Default endpoint
             if (isset($clientOptions['default_endpoint'], $endpointReferences[$clientOptions['default_endpoint']])) {
-                $clientDefinition->addMethodCall('setDefaultEndpoint', array($clientOptions['default_endpoint']));
+                $clientDefinition->addMethodCall('setDefaultEndpoint', [$clientOptions['default_endpoint']]);
             }
 
-            //Add the optional adapter class
+            // Add the optional adapter class
             if (isset($clientOptions['adapter_class'])) {
-                $clientDefinition->addMethodCall('setAdapter', array($clientOptions['adapter_class']));
+                $clientDefinition->addMethodCall('setAdapter', [$clientOptions['adapter_class']]);
             }
 
             // Configure the Plugins for the current client
             $this->configurePluginsForClient($clientOptions, $clientDefinition);
-
 
             if ($isDebug) {
                 // If debug, associate the logger to this client
@@ -139,14 +137,14 @@ class NelmioSolariumExtension extends Extension
 
     private function configureEndpoints(array $endpoints, ContainerBuilder $container): array
     {
-        $endpointReferences = array();
+        $endpointReferences = [];
         foreach ($endpoints as $name => $endpointOptions) {
             $endpointName = sprintf('solarium.client.endpoint.%s', $name);
             $endpointOptions['key'] = $name;
 
             $container
                 ->setDefinition($endpointName, new Definition(Endpoint::class))
-                ->setArguments(array($endpointOptions));
+                ->setArguments([$endpointOptions]);
             $endpointReferences[$name] = new Reference($endpointName);
         }
 
@@ -156,7 +154,7 @@ class NelmioSolariumExtension extends Extension
     private function configureLoggerForClient(string $clientName, ContainerBuilder $container): void
     {
         $logger = new Reference('solarium.data_collector');
-        $container->getDefinition($clientName)->addMethodCall('registerPlugin', array($clientName . '.logger', $logger));
+        $container->getDefinition($clientName)->addMethodCall('registerPlugin', [$clientName.'.logger', $logger]);
     }
 
     private function configureLoadBalancerForClient(
@@ -168,19 +166,19 @@ class NelmioSolariumExtension extends Extension
         if (isset($clientOptions['load_balancer']) && $clientOptions['load_balancer']['enabled']) {
             $loadBalancerDefinition = new Definition(Loadbalancer::class);
             $loadBalancerDefinition
-                ->addMethodCall('addEndpoints', array($clientOptions['load_balancer']['endpoints']))
+                ->addMethodCall('addEndpoints', [$clientOptions['load_balancer']['endpoints']])
             ;
             if (isset($clientOptions['load_balancer']['blocked_query_types'])) {
                 $loadBalancerDefinition
-                    ->addMethodCall('setBlockedQueryTypes', array($clientOptions['load_balancer']['blocked_query_types']))
+                    ->addMethodCall('setBlockedQueryTypes', [$clientOptions['load_balancer']['blocked_query_types']])
                 ;
             }
 
-            $loadBalancerName = $clientName . '.load_balancer';
+            $loadBalancerName = $clientName.'.load_balancer';
             $container->setDefinition($loadBalancerName, $loadBalancerDefinition);
 
             $clientDefinition
-                ->addMethodCall('registerPlugin', array('loadbalancer', new Reference($loadBalancerName)))
+                ->addMethodCall('registerPlugin', ['loadbalancer', new Reference($loadBalancerName)])
             ;
         }
     }
@@ -194,7 +192,7 @@ class NelmioSolariumExtension extends Extension
                 } else {
                     $plugin = new Reference($pluginOptions['plugin_service']);
                 }
-                $clientDefinition->addMethodCall('registerPlugin', array($pluginName, $plugin));
+                $clientDefinition->addMethodCall('registerPlugin', [$pluginName, $plugin]);
             }
         }
     }

@@ -5,11 +5,9 @@ namespace Nelmio\SolariumBundle;
 use Solarium\Client;
 
 /**
- * Class ClientRegistry
+ * Class ClientRegistry.
  *
  * Service to access all the clients configured by the bundle
- *
- * @package Nelmio\SolariumBundle
  */
 class ClientRegistry
 {
@@ -28,7 +26,7 @@ class ClientRegistry
     /**
      * Gets the default client name.
      *
-     * @return string The default client name.
+     * @return string the default client name
      */
     public function getDefaultClientName()
     {
@@ -38,10 +36,11 @@ class ClientRegistry
     /**
      * Gets the named client.
      *
-     * @param string $name The client name (null for the default one).
+     * @param string $name the client name (null for the default one)
+     *
+     * @return Client
      *
      * @throws \InvalidArgumentException
-     * @return Client
      */
     public function getClient($name = null)
     {
@@ -53,13 +52,13 @@ class ClientRegistry
             return $this->clients[$name];
         }
 
-        throw new \InvalidArgumentException(($name === null ? 'default client' : 'client ' . $name) . ' not configured');
+        throw new \InvalidArgumentException(($name === null ? 'default client' : 'client '.$name).' not configured');
     }
 
     /**
      * Gets an array of all registered clients.
      *
-     * @return array An array of Client instances.
+     * @return array an array of Client instances
      */
     public function getClients()
     {
@@ -69,11 +68,10 @@ class ClientRegistry
     /**
      * Gets all client names.
      *
-     * @return array An array of client names.
+     * @return array an array of client names
      */
     public function getClientNames()
     {
         return array_keys($this->clients);
     }
-
 }

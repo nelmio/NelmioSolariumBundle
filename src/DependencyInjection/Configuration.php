@@ -70,12 +70,12 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('default_endpoint')->end()
                             ->arrayNode('load_balancer')
                                 ->addDefaultsIfNotSet()
-                                ->treatFalseLike(array('enabled' => false))
-                                ->treatTrueLike(array('enabled' => true))
-                                ->treatNullLike(array('enabled' => true))
+                                ->treatFalseLike(['enabled' => false])
+                                ->treatTrueLike(['enabled' => true])
+                                ->treatNullLike(['enabled' => true])
                                 ->beforeNormalization()
                                     ->ifArray()
-                                    ->then(function($v) {
+                                    ->then(function ($v) {
                                         $v['enabled'] = isset($v['enabled']) ? $v['enabled'] : true;
 
                                         return $v;
@@ -93,7 +93,7 @@ class Configuration implements ConfigurationInterface
                                             ->always(function (array $endpoints) {
                                                 // the values should be the weight and the keys the endpoints name
                                                 // handle the case where people just list the endpoints like [endpoint1, endpoint2]
-                                                $normalizedEndpoints = array();
+                                                $normalizedEndpoints = [];
                                                 foreach ($endpoints as $name => $weight) {
                                                     if (!is_string($name)) {
                                                         $name = $weight;
@@ -109,7 +109,7 @@ class Configuration implements ConfigurationInterface
                                         ->prototype('scalar')->end()
                                     ->end()
                                     ->arrayNode('blocked_query_types')
-                                        ->defaultValue(array(Client::QUERY_UPDATE))
+                                        ->defaultValue([Client::QUERY_UPDATE])
                                         ->beforeNormalization()
                                             ->ifString()
                                             ->then($this->getNormalizeListToArrayClosure())
