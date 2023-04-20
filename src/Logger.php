@@ -3,12 +3,12 @@
 namespace Nelmio\SolariumBundle;
 
 use Psr\Log\LoggerInterface;
-use Solarium\Core\Client\Request as SolariumRequest;
 use Solarium\Core\Client\Endpoint as SolariumEndpoint;
-use Solarium\Core\Plugin\AbstractPlugin as SolariumPlugin;
+use Solarium\Core\Client\Request as SolariumRequest;
 use Solarium\Core\Event\Events as SolariumEvents;
-use Solarium\Core\Event\PreExecuteRequest as SolariumPreExecuteRequestEvent;
 use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
+use Solarium\Core\Event\PreExecuteRequest as SolariumPreExecuteRequestEvent;
+use Solarium\Core\Plugin\AbstractPlugin as SolariumPlugin;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -17,18 +17,18 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializable
 {
-    private $data = array();
-    private $queries = array();
+    private $data = [];
+    private $queries = [];
     private $currentRequest;
     private $currentStartTime;
     private $currentEndpoint;
 
     private $logger;
     private $stopwatch;
-    private $eventDispatchers = array();
+    private $eventDispatchers = [];
 
     /**
-     * Plugin init function
+     * Plugin init function.
      *
      * Register event listeners
      */
@@ -37,8 +37,8 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         $dispatcher = $this->client->getEventDispatcher();
         if (!in_array($dispatcher, $this->eventDispatchers, true)) {
             if ($dispatcher instanceof EventDispatcherInterface) {
-                $dispatcher->addListener(SolariumEvents::PRE_EXECUTE_REQUEST, array($this, 'preExecuteRequest'), 1000);
-                $dispatcher->addListener(SolariumEvents::POST_EXECUTE_REQUEST, array($this, 'postExecuteRequest'), -1000);
+                $dispatcher->addListener(SolariumEvents::PRE_EXECUTE_REQUEST, [$this, 'preExecuteRequest'], 1000);
+                $dispatcher->addListener(SolariumEvents::POST_EXECUTE_REQUEST, [$this, 'postExecuteRequest'], -1000);
             }
             $this->eventDispatchers[] = $dispatcher;
         }
@@ -56,12 +56,12 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
 
     public function log(SolariumRequest $request, $response, SolariumEndpoint $endpoint, $duration)
     {
-        $this->queries[] = array(
+        $this->queries[] = [
             'request' => $request,
             'response' => $response,
             'duration' => $duration,
             'base_uri' => $this->getEndpointBaseUrl($endpoint),
-        );
+        ];
     }
 
     public function collect(HttpRequest $request, HttpResponse $response, /** \Throwable */ $exception = null)
@@ -74,10 +74,10 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         foreach ($this->queries as $queryStruct) {
             $time += $queryStruct['duration'];
         }
-        $this->data = array(
-            'queries'     => $this->queries,
-            'total_time'  => $time,
-        );
+        $this->data = [
+            'queries' => $this->queries,
+            'total_time' => $time,
+        ];
     }
 
     public function getName(): string
@@ -87,7 +87,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
 
     public function getQueries()
     {
-        return array_key_exists('queries', $this->data) ? $this->data['queries'] : array();
+        return array_key_exists('queries', $this->data) ? $this->data['queries'] : [];
     }
 
     public function getQueryCount()
@@ -114,7 +114,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         $this->currentEndpoint = $event->getEndpoint();
 
         if (null !== $this->logger) {
-            $this->logger->debug($this->getEndpointBaseUrl($this->currentEndpoint) . $this->currentRequest->getUri());
+            $this->logger->debug($this->getEndpointBaseUrl($this->currentEndpoint).$this->currentRequest->getUri());
         }
         $this->currentStartTime = microtime(true);
     }
@@ -170,8 +170,8 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
      */
     public function reset()
     {
-        $this->data = array();
-        $this->queries = array();
+        $this->data = [];
+        $this->queries = [];
     }
 
     public function __serialize(): array

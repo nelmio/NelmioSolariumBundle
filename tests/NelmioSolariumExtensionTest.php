@@ -32,11 +32,11 @@ class NelmioSolariumExtensionTest extends TestCase
 {
     public function testLoadEmptyConfiguration()
     {
-        $config = array(
-            'clients' => array(
-                 'default' => array()
-             )
-        );
+        $config = [
+            'clients' => [
+                 'default' => [],
+             ],
+        ];
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -57,11 +57,11 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testNoClients()
     {
-        $config = array(
-            'endpoints' => array(
-                 'default' => array()
-             )
-        );
+        $config = [
+            'endpoints' => [
+                 'default' => [],
+             ],
+        ];
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -82,13 +82,13 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testLoadCustomClient()
     {
-        $config = array(
-            'clients' => array(
-                'default' => array(
-                    'client_class' => StubClient::class
-                )
-            )
-        );
+        $config = [
+            'clients' => [
+                'default' => [
+                    'client_class' => StubClient::class,
+                ],
+            ],
+        ];
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -98,15 +98,15 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testDefaultClient()
     {
-        $config = array(
+        $config = [
             'default_client' => 'client2',
-            'clients' => array(
-                'client1' => array(),
-                'client2' => array(
-                    'client_class' => StubClient::class
-                )
-            ),
-        );
+            'clients' => [
+                'client1' => [],
+                'client2' => [
+                    'client_class' => StubClient::class,
+                ],
+            ],
+        ];
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -117,15 +117,15 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testPlugins()
     {
-        $config = array(
-          'clients' => array(
-            'client' => array(
-              'plugins' => array('plugin1' => array('plugin_service' => 'my_plugin'), 'plugin2' => array('plugin_class' => MyPluginClass::class))
-            )
-          ),
-        );
+        $config = [
+          'clients' => [
+            'client' => [
+              'plugins' => ['plugin1' => ['plugin_service' => 'my_plugin'], 'plugin2' => ['plugin_class' => MyPluginClass::class]],
+            ],
+          ],
+        ];
 
-        $container = $this->createCompiledContainerForConfig($config, true, array('my_plugin' => new Definition(MyPluginClass::class)));
+        $container = $this->createCompiledContainerForConfig($config, true, ['my_plugin' => new Definition(MyPluginClass::class)]);
 
         $client = $container->get('solarium.client');
         $plugin1 = $client->getPlugin('plugin1');
@@ -137,29 +137,29 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testEndpoints()
     {
-        $config = array(
-            'endpoints' => array(
-                'endpoint1' => array(
+        $config = [
+            'endpoints' => [
+                'endpoint1' => [
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core1',
-                ),
-                'endpoint2' => array(
+                ],
+                'endpoint2' => [
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core2',
-                ),
-                'endpoint3' => array(
+                ],
+                'endpoint3' => [
                     'scheme' => 'https',
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core3',
-                )
-            ),
-            'clients' => array(
-                'client1' => array()
-            ),
-        );
+                ],
+            ],
+            'clients' => [
+                'client1' => [],
+            ],
+        ];
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -201,25 +201,25 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testSpecificEndpoints()
     {
-        $config = array(
-            'endpoints' => array(
-                'endpoint1' => array(
+        $config = [
+            'endpoints' => [
+                'endpoint1' => [
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core1',
-                ),
-                'endpoint2' => array(
+                ],
+                'endpoint2' => [
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core2',
-                )
-            ),
-            'clients' => array(
-                'client1' => array(
-                    'endpoints' => array('endpoint2'),
-                )
-            ),
-        );
+                ],
+            ],
+            'clients' => [
+                'client1' => [
+                    'endpoints' => ['endpoint2'],
+                ],
+            ],
+        ];
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -238,26 +238,26 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testDefaultEndpoint()
     {
-        $config = array(
-            'endpoints' => array(
-                'endpoint1' => array(
+        $config = [
+            'endpoints' => [
+                'endpoint1' => [
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core1',
-                ),
-                'endpoint2' => array(
+                ],
+                'endpoint2' => [
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core2',
-                    'path' =>'/custom_prefix',
-                )
-            ),
-            'clients' => array(
-                'client1' => array(
+                    'path' => '/custom_prefix',
+                ],
+            ],
+            'clients' => [
+                'client1' => [
                     'default_endpoint' => 'endpoint2',
-                )
-            ),
-        );
+                ],
+            ],
+        ];
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -295,33 +295,33 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testClientRegistry()
     {
-        $config = array(
-            'endpoints' => array(
-                'endpoint1' => array(
+        $config = [
+            'endpoints' => [
+                'endpoint1' => [
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core1',
-                ),
-                'endpoint2' => array(
+                ],
+                'endpoint2' => [
                     'host' => 'localhost',
                     'port' => 123,
                     'core' => 'core2',
-                )
-            ),
-            'clients' => array(
-                'client1' => array(
-                    'endpoints' => array('endpoint1'),
-                ),
-                'client2' => array(
-                    'endpoints' => array('endpoint2'),
-                )
-            ),
-        );
+                ],
+            ],
+            'clients' => [
+                'client1' => [
+                    'endpoints' => ['endpoint1'],
+                ],
+                'client2' => [
+                    'endpoints' => ['endpoint2'],
+                ],
+            ],
+        ];
         $container = $this->createCompiledContainerForConfig($config);
         $clientRegistry = $container->get('solarium.client_registry');
         $this->assertInstanceOf(ClientRegistry::class, $clientRegistry);
         $this->assertInstanceOf(Client::class, $clientRegistry->getClient('client1'));
-        $this->assertEquals(array('client1', 'client2'), $clientRegistry->getClientNames());
+        $this->assertEquals(['client1', 'client2'], $clientRegistry->getClientNames());
 
         $this->expectException(\InvalidArgumentException::class);
         $this->assertNotNull($clientRegistry->getClient());
@@ -329,7 +329,7 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testLogger()
     {
-        $config = array();
+        $config = [];
 
         $container = $this->createCompiledContainerForConfig($config, true);
 
@@ -350,31 +350,31 @@ class NelmioSolariumExtensionTest extends TestCase
 
     public function testLoadBalancer()
     {
-        $config = array(
-            'endpoints' => array(
-                'master' => array(
+        $config = [
+            'endpoints' => [
+                'master' => [
                     'host' => 'localhost',
                     'port' => 123,
-                ),
-                'slave1' => array(
+                ],
+                'slave1' => [
                     'host' => 'localhost',
                     'port' => 124,
-                ),
-                'slave2' => array(
+                ],
+                'slave2' => [
                     'host' => 'localhost',
                     'port' => 125,
-                )
-            ),
-            'clients' => array(
-                'client1' => array(
+                ],
+            ],
+            'clients' => [
+                'client1' => [
                     'endpoints' => ['master'],
-                    'load_balancer' => array(
-                        'endpoints' => array('slave1', 'slave2' => 5),
-                        'blocked_query_types' => array('ping'),
-                    ),
-                )
-            ),
-        );
+                    'load_balancer' => [
+                        'endpoints' => ['slave1', 'slave2' => 5],
+                        'blocked_query_types' => ['ping'],
+                    ],
+                ],
+            ],
+        ];
 
         $container = $this->createCompiledContainerForConfig($config);
 
@@ -397,10 +397,10 @@ class NelmioSolariumExtensionTest extends TestCase
         $loadBalancedEndpoints = $loadBalancerPlugin->getEndpoints();
         $this->assertCount(2, $loadBalancedEndpoints);
         $this->assertEquals(
-            array(
+            [
                 'slave1' => 1,
                 'slave2' => 5,
-            ),
+            ],
             $loadBalancedEndpoints
         );
     }
@@ -411,8 +411,8 @@ class NelmioSolariumExtensionTest extends TestCase
             'clients' => [
                 'default' => [
                     'adapter_timeout' => 10,
-                ]
-            ]
+                ],
+            ],
         ];
 
         $container = $this->createCompiledContainerForConfig($config);
@@ -426,8 +426,8 @@ class NelmioSolariumExtensionTest extends TestCase
             'clients' => [
                 'default' => [
                     'adapter_service' => 'foo',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $container = $this->createCompiledContainerForConfig($config, false, ['foo' => new Definition(Http::class)]);
@@ -442,15 +442,15 @@ class NelmioSolariumExtensionTest extends TestCase
                 'default' => [
                     'adapter_timeout' => 10,
                     'adapter_service' => 'foo',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $this->expectExceptionMessage('Setting "adapter_timeout" is only supported for the default adapter and not in combination with "adapter_service"');
         $this->createCompiledContainerForConfig($config);
     }
 
-    private function createCompiledContainerForConfig($config, $debug = false, $extraServices = array())
+    private function createCompiledContainerForConfig($config, $debug = false, $extraServices = [])
     {
         $container = $this->createContainer($debug);
         $container->registerExtension(new FrameworkExtension());
@@ -467,21 +467,21 @@ class NelmioSolariumExtensionTest extends TestCase
 
     private function createContainer($debug = false)
     {
-        return new ContainerBuilder(new ParameterBag(array(
-            'kernel.cache_dir'       => __DIR__,
-            'kernel.charset'         => 'UTF-8',
-            'kernel.debug'           => $debug,
+        return new ContainerBuilder(new ParameterBag([
+            'kernel.cache_dir' => __DIR__,
+            'kernel.charset' => 'UTF-8',
+            'kernel.debug' => $debug,
             'kernel.container_class' => 'dummy',
-            'kernel.project_dir'     => __DIR__,
-            'kernel.build_dir'       => __DIR__,
+            'kernel.project_dir' => __DIR__,
+            'kernel.build_dir' => __DIR__,
             'debug.file_link_format' => 'foo',
-        )));
+        ]));
     }
 
     private function compileContainer(ContainerBuilder $container)
     {
-        $container->getCompilerPassConfig()->setOptimizationPasses(array());
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
+        $container->getCompilerPassConfig()->setOptimizationPasses([]);
+        $container->getCompilerPassConfig()->setRemovingPasses([]);
         $container->compile();
     }
 }
