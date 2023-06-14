@@ -235,6 +235,54 @@ nelmio_solarium:
             adapter_timeout: 10
 ```
 
+## Loadbalancer Plugin
+
+Solarium ships with a loadbalancer plugin which can be configured via the `load_balancer` option on the client level.
+
+Passing a list of endpoints will assign equal weights of 1 and randomly pick an endpoint for each request.
+
+```yaml
+nelmio_solarium:
+    endpoints:
+        one:
+            host: 192.168.1.2
+        two:
+            host: 192.168.1.3
+        three:
+            host: 192.168.1.4
+    clients:
+        default:
+            load_balancer:
+                enabled: true
+                endpoints: [ one, two, three ] # will assign equal weights of 1
+```
+
+You can also assign different weights (integers >= 1) to the endpoints to have a more fine-grained control over the loadbalancing. 
+There are also options to customize the blocked query types and the default endpoint to use for those queries.
+
+```yaml
+nelmio_solarium:
+    endpoints:
+        one:
+            host: 192.168.1.2
+        two:
+            host: 192.168.1.3
+        three:
+            host: 192.168.1.4
+    clients:
+        default:
+            default_endpoint: two # the default endpoint to use for blocked query types 
+            load_balancer:
+                enabled: true
+                blocked_query_types: [ 'select', 'update' ] # default is [ 'update' ]
+                endpoints: 
+                    one: 1
+                    two: 2 # this endpoint will be used twice as often as the other two       
+                    three: 1
+```
+
+Also see the Solarium documentation for the loadbalancer plugin: https://github.com/solariumphp/solarium/blob/master/docs/plugins.md#loadbalancer-plugin
+
 ## License
 
 Released under the MIT License, see LICENSE.
