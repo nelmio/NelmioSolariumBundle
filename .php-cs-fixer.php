@@ -5,5 +5,6 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
         'yoda_style' => false,
+        'trailing_comma_in_multiline' => false,
     ])
 ;
