@@ -34,8 +34,8 @@ class NelmioSolariumExtensionTest extends TestCase
     {
         $config = [
             'clients' => [
-                 'default' => [],
-             ],
+                'default' => [],
+            ],
         ];
 
         $container = $this->createCompiledContainerForConfig($config);
@@ -59,8 +59,8 @@ class NelmioSolariumExtensionTest extends TestCase
     {
         $config = [
             'endpoints' => [
-                 'default' => [],
-             ],
+                'default' => [],
+            ],
         ];
 
         $container = $this->createCompiledContainerForConfig($config);
@@ -118,11 +118,11 @@ class NelmioSolariumExtensionTest extends TestCase
     public function testPlugins()
     {
         $config = [
-          'clients' => [
-            'client' => [
-              'plugins' => ['plugin1' => ['plugin_service' => 'my_plugin'], 'plugin2' => ['plugin_class' => MyPluginClass::class]],
+            'clients' => [
+                'client' => [
+                    'plugins' => ['plugin1' => ['plugin_service' => 'my_plugin'], 'plugin2' => ['plugin_class' => MyPluginClass::class]],
+                ],
             ],
-          ],
         ];
 
         $container = $this->createCompiledContainerForConfig($config, true, ['my_plugin' => new Definition(MyPluginClass::class)]);
