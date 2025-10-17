@@ -32,7 +32,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
      *
      * Register event listeners
      */
-    protected function initPluginType()
+    protected function initPluginType(): void
     {
         $dispatcher = $this->client->getEventDispatcher();
         if (!in_array($dispatcher, $this->eventDispatchers, true)) {
