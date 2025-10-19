@@ -8,7 +8,7 @@
         bootstrap="vendor/autoload.php"
 >
     <php>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=15" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=0" />
     </php>
     <testsuites>
         <testsuite name="NelmioSolariumBundle Test Suite">
