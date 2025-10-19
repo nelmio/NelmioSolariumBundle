@@ -475,6 +475,10 @@ class NelmioSolariumExtensionTest extends TestCase
             'kernel.project_dir' => __DIR__,
             'kernel.build_dir' => __DIR__,
             'debug.file_link_format' => 'foo',
+            'env(bool:default::SYMFONY_TRUST_X_SENDFILE_TYPE_HEADER)' => '',
+            'env(default::SYMFONY_TRUSTED_HOSTS)' => '',
+            'env(default::SYMFONY_TRUSTED_PROXIES)' => '',
+            'env(default::SYMFONY_TRUSTED_HEADERS)' => '',
         ]));
     }
 
