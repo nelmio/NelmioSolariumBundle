@@ -24,7 +24,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 /**
  * @phpstan-type Query array{request: SolariumRequest, response: ?Response, duration: int|float, base_uri: string}
  */
-class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializable
+final class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializable
 {
     /**
      * @var array{queries?: Query[], total_time?: int|float}
