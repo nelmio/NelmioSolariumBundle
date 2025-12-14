@@ -17,6 +17,8 @@ jobs:
                     -   php: 8.4
                         SYMFONY_REQUIRE: 7.3.*
                     -   php: 8.4
+                        SYMFONY_REQUIRE: 8.0.*
+                    -   php: 8.4
                         stability: dev
 
         steps:

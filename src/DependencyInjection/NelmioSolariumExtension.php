@@ -28,10 +28,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class NelmioSolariumExtension extends Extension
 {
-    /**
-     * @return void
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
 

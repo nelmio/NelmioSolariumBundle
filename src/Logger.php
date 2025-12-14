@@ -64,10 +64,7 @@ class Logger extends SolariumPlugin implements DataCollectorInterface, \Serializ
         ];
     }
 
-    /**
-     * @return void
-     */
-    public function collect(HttpRequest $request, HttpResponse $response, /** \Throwable */ $exception = null)
+    public function collect(HttpRequest $request, HttpResponse $response, /** \Throwable */ $exception = null): void
     {
         if (isset($this->currentRequest)) {
             $this->failCurrentRequest();
