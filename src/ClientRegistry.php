@@ -1,76 +1,55 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nelmio\SolariumBundle;
 
 use Solarium\Client;
 
-/**
- * Class ClientRegistry.
- *
- * Service to access all the clients configured by the bundle
- */
 class ClientRegistry
 {
-    /** @var string */
-    protected $defaultClientName;
-
-    /** @var array */
-    protected $clients;
-
-    public function __construct(array $clients, $defaultClientName)
+    /**
+     * @param array<string, Client> $clients
+     */
+    public function __construct(private array $clients, private ?string $defaultClientName)
     {
-        $this->defaultClientName = $defaultClientName;
-        $this->clients = $clients;
     }
 
-    /**
-     * Gets the default client name.
-     *
-     * @return string the default client name
-     */
-    public function getDefaultClientName()
+    public function getDefaultClientName(): ?string
     {
         return $this->defaultClientName;
     }
 
     /**
-     * Gets the named client.
-     *
-     * @param string $name the client name (null for the default one)
-     *
-     * @return Client
+     * @param string|null $name the client name (null for the default one)
      *
      * @throws \InvalidArgumentException
      */
-    public function getClient($name = null)
+    public function getClient(?string $name = null): Client
     {
         if (null === $name) {
             $name = $this->defaultClientName;
         }
 
-        if (in_array($name, $this->getClientNames())) {
+        if ($name !== null && in_array($name, $this->getClientNames())) {
             return $this->clients[$name];
         }
 
-        throw new \InvalidArgumentException(($name === null ? 'default client' : 'client '.$name).' not configured');
+        throw new \InvalidArgumentException('client '.$name.' not configured');
     }
 
     /**
-     * Gets an array of all registered clients.
-     *
-     * @return array an array of Client instances
+     * @return array<string, Client>
      */
-    public function getClients()
+    public function getClients(): array
     {
         return $this->clients;
     }
 
     /**
-     * Gets all client names.
-     *
-     * @return array an array of client names
+     * @return string[]
      */
-    public function getClientNames()
+    public function getClientNames(): array
     {
         return array_keys($this->clients);
     }

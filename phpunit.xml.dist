@@ -2,14 +2,12 @@
 
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.3/phpunit.xsd"
-        backupGlobals="true"
+        xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+        displayDetailsOnAllIssues="true"
         colors="true"
-        bootstrap="vendor/autoload.php"
+        failOnWarning="true"
+        failOnRisky="true"
 >
-    <php>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=0" />
-    </php>
     <testsuites>
         <testsuite name="NelmioSolariumBundle Test Suite">
             <directory>./tests/</directory>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Nelmio SolariumBundle.
  *
@@ -16,6 +18,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
  */
-class NelmioSolariumBundle extends Bundle
+final class NelmioSolariumBundle extends Bundle
 {
 }

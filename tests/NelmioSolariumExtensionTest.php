@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of the Nelmio SolariumBundle.
  *
@@ -30,7 +32,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class NelmioSolariumExtensionTest extends TestCase
 {
-    public function testLoadEmptyConfiguration()
+    public function testLoadEmptyConfiguration(): void
     {
         $config = [
             'clients' => [
@@ -55,7 +57,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals(8983, $endpoint->getPort());
     }
 
-    public function testNoClients()
+    public function testNoClients(): void
     {
         $config = [
             'endpoints' => [
@@ -80,7 +82,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals(8983, $endpoint->getPort());
     }
 
-    public function testLoadCustomClient()
+    public function testLoadCustomClient(): void
     {
         $config = [
             'clients' => [
@@ -96,7 +98,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertInstanceOf(Curl::class, $container->get('solarium.client')->getAdapter());
     }
 
-    public function testDefaultClient()
+    public function testDefaultClient(): void
     {
         $config = [
             'default_client' => 'client2',
@@ -115,7 +117,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertInstanceOf(StubClient::class, $container->get('solarium.client.client2'));
     }
 
-    public function testPlugins()
+    public function testPlugins(): void
     {
         $config = [
             'clients' => [
@@ -127,6 +129,7 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $container = $this->createCompiledContainerForConfig($config, true, ['my_plugin' => new Definition(MyPluginClass::class)]);
 
+        /** @var Client $client */
         $client = $container->get('solarium.client');
         $plugin1 = $client->getPlugin('plugin1');
         $plugin2 = $client->getPlugin('plugin2');
@@ -135,7 +138,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertInstanceOf(MyPluginClass::class, $plugin2);
     }
 
-    public function testEndpoints()
+    public function testEndpoints(): void
     {
         $config = [
             'endpoints' => [
@@ -163,19 +166,17 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        /** @var Endpoint $endpoint */
-        $endpoint = $container->get('solarium.client')->getEndpoint();
-        $this->assertInstanceOf(Endpoint::class, $endpoint);
+        /** @var Client $client */
+        $client = $container->get('solarium.client');
+        $endpoint = $client->getEndpoint();
 
         $this->assertEquals('endpoint1', $endpoint->getKey());
         $this->assertEquals('localhost', $endpoint->getHost());
         $this->assertEquals(123, $endpoint->getPort());
         $this->assertEquals('core1', $endpoint->getCore());
 
-        /** @var Endpoint[] $endpoints */
-        $endpoints = $container->get('solarium.client')->getEndpoints();
-
-        $this->assertEquals(3, count($container->get('solarium.client')->getEndpoints()));
+        $endpoints = $client->getEndpoints();
+        $this->assertCount(3, $endpoints);
 
         $this->assertTrue(isset($endpoints['endpoint1']));
         $this->assertEquals('endpoint1', $endpoints['endpoint1']->getKey());
@@ -199,7 +200,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('core3', $endpoints['endpoint3']->getCore());
     }
 
-    public function testSpecificEndpoints()
+    public function testSpecificEndpoints(): void
     {
         $config = [
             'endpoints' => [
@@ -223,11 +224,11 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        /** @var Endpoint $endpoint */
-        $endpoint = $container->get('solarium.client')->getEndpoint();
-        $this->assertInstanceOf(Endpoint::class, $endpoint);
+        /** @var Client $client */
+        $client = $container->get('solarium.client');
+        $endpoint = $client->getEndpoint();
 
-        $this->assertEquals(1, count($container->get('solarium.client')->getEndpoints()));
+        $this->assertCount(1, $client->getEndpoints());
 
         $this->assertEquals('endpoint2', $endpoint->getKey());
         $this->assertEquals('http', $endpoint->getScheme());
@@ -236,7 +237,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('core2', $endpoint->getCore());
     }
 
-    public function testDefaultEndpoint()
+    public function testDefaultEndpoint(): void
     {
         $config = [
             'endpoints' => [
@@ -261,19 +262,18 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
-        /** @var Endpoint $endpoint */
-        $endpoint = $container->get('solarium.client')->getEndpoint();
-        $this->assertInstanceOf(Endpoint::class, $endpoint);
+        /** @var Client $client */
+        $client = $container->get('solarium.client');
+        $endpoint = $client->getEndpoint();
 
         $this->assertEquals('endpoint2', $endpoint->getKey());
         $this->assertEquals('localhost', $endpoint->getHost());
         $this->assertEquals(123, $endpoint->getPort());
         $this->assertEquals('core2', $endpoint->getCore());
 
-        /** @var Endpoint[] $endpoints */
-        $endpoints = $container->get('solarium.client')->getEndpoints();
+        $endpoints = $client->getEndpoints();
 
-        $this->assertEquals(2, count($container->get('solarium.client')->getEndpoints()));
+        $this->assertCount(2, $client->getEndpoints());
 
         $this->assertTrue(isset($endpoints['endpoint1']));
         $this->assertEquals('endpoint1', $endpoints['endpoint1']->getKey());
@@ -293,7 +293,7 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals('http://localhost:123/custom_prefix/solr/core2/', $endpoints['endpoint2']->getCoreBaseUri());
     }
 
-    public function testClientRegistry()
+    public function testClientRegistry(): void
     {
         $config = [
             'endpoints' => [
@@ -324,10 +324,10 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->assertEquals(['client1', 'client2'], $clientRegistry->getClientNames());
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->assertNotNull($clientRegistry->getClient());
+        $clientRegistry->getClient();
     }
 
-    public function testLogger()
+    public function testLogger(): void
     {
         $config = [];
 
@@ -335,20 +335,24 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $this->assertInstanceOf(Logger::class, $container->get('solarium.data_collector'));
 
-        /** @var EventDispatcherInterface $eventDispatcher */
-        $eventDispatcher = $container->get('solarium.client')->getEventDispatcher();
+        /** @var Client $client */
+        $client = $container->get('solarium.client');
+
+        $eventDispatcher = $client->getEventDispatcher();
         $this->assertInstanceOf(EventDispatcherInterface::class, $eventDispatcher);
         $preExecuteListeners = $eventDispatcher->getListeners(Events::PRE_EXECUTE_REQUEST);
-        $this->assertEquals(1, count($preExecuteListeners));
+        $this->assertCount(1, $preExecuteListeners);
+        /* @phpstan-ignore offsetAccess.nonOffsetAccessible */
         $this->assertInstanceOf(Logger::class, $preExecuteListeners[0][0]);
-        $this->assertEquals('preExecuteRequest', $preExecuteListeners[0][1]);
+        $this->assertSame('preExecuteRequest', $preExecuteListeners[0][1]);
         $postExecuteListeners = $eventDispatcher->getListeners(Events::POST_EXECUTE_REQUEST);
-        $this->assertEquals(1, count($postExecuteListeners));
+        $this->assertCount(1, $postExecuteListeners);
+        /* @phpstan-ignore offsetAccess.nonOffsetAccessible */
         $this->assertInstanceOf(Logger::class, $postExecuteListeners[0][0]);
-        $this->assertEquals('postExecuteRequest', $postExecuteListeners[0][1]);
+        $this->assertSame('postExecuteRequest', $postExecuteListeners[0][1]);
     }
 
-    public function testLoadBalancer()
+    public function testLoadBalancer(): void
     {
         $config = [
             'endpoints' => [
@@ -378,9 +382,9 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $container = $this->createCompiledContainerForConfig($config);
 
+        /** @var Client $client */
         $client = $container->get('solarium.client');
 
-        /** @var Endpoint[] $endpoints */
         $endpoints = $client->getEndpoints();
 
         $this->assertCount(1, $endpoints);
@@ -416,8 +420,12 @@ class NelmioSolariumExtensionTest extends TestCase
         ];
 
         $container = $this->createCompiledContainerForConfig($config);
-        $this->assertInstanceOf(Curl::class, $container->get('solarium.client')->getAdapter());
-        $this->assertSame(10, $container->get('solarium.client')->getAdapter()->getTimeout());
+
+        /** @var Client $client */
+        $client = $container->get('solarium.client');
+
+        $this->assertInstanceOf(Curl::class, $client->getAdapter());
+        $this->assertSame(10, $client->getAdapter()->getTimeout());
     }
 
     public function testAdapterService(): void
@@ -432,7 +440,10 @@ class NelmioSolariumExtensionTest extends TestCase
 
         $container = $this->createCompiledContainerForConfig($config, false, ['foo' => new Definition(Http::class)]);
 
-        $this->assertInstanceOf(Http::class, $container->get('solarium.client')->getAdapter());
+        /** @var Client $client */
+        $client = $container->get('solarium.client');
+
+        $this->assertInstanceOf(Http::class, $client->getAdapter());
     }
 
     public function testAdapterTimeoutAndServiceNotSupported(): void
@@ -450,7 +461,11 @@ class NelmioSolariumExtensionTest extends TestCase
         $this->createCompiledContainerForConfig($config);
     }
 
-    private function createCompiledContainerForConfig($config, $debug = false, $extraServices = [])
+    /**
+     * @param array<string, mixed>      $config
+     * @param array<string, Definition> $extraServices
+     */
+    private function createCompiledContainerForConfig(array $config, bool $debug = false, array $extraServices = []): ContainerBuilder
     {
         $container = $this->createContainer($debug);
         $container->registerExtension(new FrameworkExtension());
@@ -465,7 +480,7 @@ class NelmioSolariumExtensionTest extends TestCase
         return $container;
     }
 
-    private function createContainer($debug = false)
+    private function createContainer(bool $debug = false): ContainerBuilder
     {
         return new ContainerBuilder(new ParameterBag([
             'kernel.cache_dir' => __DIR__,
@@ -482,7 +497,7 @@ class NelmioSolariumExtensionTest extends TestCase
         ]));
     }
 
-    private function compileContainer(ContainerBuilder $container)
+    private function compileContainer(ContainerBuilder $container): void
     {
         $container->getCompilerPassConfig()->setOptimizationPasses([]);
         $container->getCompilerPassConfig()->setRemovingPasses([]);

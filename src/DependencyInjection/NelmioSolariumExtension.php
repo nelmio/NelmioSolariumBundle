@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
  */
-class NelmioSolariumExtension extends Extension
+final class NelmioSolariumExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -135,6 +135,11 @@ class NelmioSolariumExtension extends Extension
         }
     }
 
+    /**
+     * @param array<string, array<string, mixed>> $endpoints
+     *
+     * @return array<string, Reference>
+     */
     private function configureEndpoints(array $endpoints, ContainerBuilder $container): array
     {
         $endpointReferences = [];
@@ -157,6 +162,9 @@ class NelmioSolariumExtension extends Extension
         $container->getDefinition($clientName)->addMethodCall('registerPlugin', [$clientName.'.logger', $logger]);
     }
 
+    /**
+     * @param array<string, mixed> $clientOptions
+     */
     private function configureLoadBalancerForClient(
         string $clientName,
         array $clientOptions,
@@ -183,6 +191,9 @@ class NelmioSolariumExtension extends Extension
         }
     }
 
+    /**
+     * @param array<string, mixed> $clientOptions
+     */
     private function configurePluginsForClient(array $clientOptions, Definition $clientDefinition): void
     {
         if (isset($clientOptions['plugins'])) {
