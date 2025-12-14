@@ -167,7 +167,7 @@ final class Logger extends SolariumPlugin implements DataCollectorInterface, \Se
         $this->currentEndpoint = null;
     }
 
-    public function serialize(): ?string
+    public function serialize(): string
     {
         return serialize($this->data);
     }
