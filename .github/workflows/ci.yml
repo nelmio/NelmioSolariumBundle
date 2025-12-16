@@ -10,15 +10,14 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    -   php: 8.1
-                        SYMFONY_REQUIRE: 6.4.*
                     -   php: 8.2
+                        SYMFONY_REQUIRE: 6.4.*
                     -   php: 8.3
                     -   php: 8.4
                         SYMFONY_REQUIRE: 7.3.*
                     -   php: 8.4
                         SYMFONY_REQUIRE: 8.0.*
-                    -   php: 8.4
+                    -   php: 8.5
                         stability: dev
 
         steps:
@@ -43,14 +42,40 @@ jobs:
                 run: composer update ${{ matrix.composer-flags }} --prefer-dist
 
             -   name: Phpunit
-                run: ./vendor/bin/simple-phpunit
+                run: ./vendor/bin/phpunit
 
-    php-cs-fixer:
-        name: PHP-CS-Fixer
+    php-stan:
         runs-on: ubuntu-latest
+        name: PHPStan
+
         steps:
-            -   uses: actions/checkout@v3
-            -   name: PHP-CS-Fixer
-                uses: docker://oskarstark/php-cs-fixer-ga
+            -   uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
                 with:
-                    args: --config=.php-cs-fixer.php --diff --dry-run
+                    php-version: "8.5"
+
+            -   name: Install dependencies
+                run: composer update --prefer-dist
+
+            -   name: PHPStan
+                run: vendor/bin/phpstan
+
+    cs-fixer:
+        runs-on: ubuntu-latest
+        name: PHP CS Fixer
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "8.5"
+
+            -   name: Install dependencies
+                run: composer update --prefer-dist
+
+            -   name: PHP CS Fixer
+                run: vendor/bin/php-cs-fixer fix --diff --dry-run

@@ -11,14 +11,16 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "solarium/solarium": "^6.4.1",
         "symfony/dependency-injection": "^6.4 || ^7.3 || ^8.0",
         "symfony/framework-bundle": "^6.4 || ^7.3 || ^8.0",
         "symfony/http-kernel": "^6.4 || ^7.3 || ^8.0"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^7.3 || ^8.0",
+        "friendsofphp/php-cs-fixer": "^3.92",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5.46",
         "symfony/stopwatch": "^6.4 || ^7.3 || ^8.0"
     },
     "autoload": {
@@ -28,7 +30,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "5.x-dev"
+            "dev-master": "6.x-dev"
         }
     },
     "config": {

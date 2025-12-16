@@ -4,3 +4,4 @@ phpunit.xml.dist  export-ignore
 .gitignore        export-ignore
 .github           export-ignore
 .php-cs-fixer.php export-ignore
+phpstan.neon      export-ignore

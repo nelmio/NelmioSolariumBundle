@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Nelmio SolariumBundle.
  *
@@ -18,7 +20,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
@@ -138,7 +140,7 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    public function getNormalizeListToArrayClosure()
+    public function getNormalizeListToArrayClosure(): \Closure
     {
         return function ($endpointList) {
             return preg_split('/\s*,\s*/', $endpointList);
