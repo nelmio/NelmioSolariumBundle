@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 ### Security
 
+
+## [v6.0.0](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v6.0.0) - 2025-12-16
+### Added
+- strict types declaration to all PHP files (add missing types, declare strict types and some improvements #140)
+- return types to Nelmio\SolariumBundle\ClientRegistry and Nelmio\SolariumBundle\DependencyInjection\Configuration (add missing types, declare strict types and some improvements #140)
+- support for Symfony 8 (#139)
+### Changed
+- marked classes as final: Nelmio\SolariumBundle\DependencyInjection\Configuration, Nelmio\SolariumBundle\DependencyInjection\NelmioSolariumExtension, Nelmio\SolariumBundle\Logger (add missing types, declare strict types and some improvements #140)
+- removed support for PHP 8.1 (#140)
+
 ## [v5.0.0](https://github.com/nelmio/NelmioSolariumBundle/releases/tag/v5.0.0) - 2021-11-16
 ### Added
 - Added compatibility with Solarium ^6.1
