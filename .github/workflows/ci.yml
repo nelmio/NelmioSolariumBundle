@@ -12,12 +12,22 @@ jobs:
                 include:
                     -   php: 8.2
                         SYMFONY_REQUIRE: 6.4.*
+                        solarium: ^6.4.1
+                    -   php: 8.2
+                        SYMFONY_REQUIRE: 6.4.*
+                        solarium: ^7.0
                     -   php: 8.3
+                        SYMFONY_REQUIRE: 7.4.*
+                        solarium: ^6.4.1
+                    -   php: 8.3
+                        SYMFONY_REQUIRE: 7.4.*
+                        solarium: ^7.0
                     -   php: 8.4
-                        SYMFONY_REQUIRE: 7.3.*
+                        solarium: ^6.4.1
                     -   php: 8.4
-                        SYMFONY_REQUIRE: 8.0.*
+                        solarium: ^7.0
                     -   php: 8.5
+                        solarium: ^7.0
                         stability: dev
 
         steps:
@@ -35,6 +45,9 @@ jobs:
 
             -   name: Install symfony/flex
                 run: composer global config allow-plugins.symfony/flex true && composer global require symfony/flex
+
+            -   name: Require Solarium version
+                run: composer require solarium/solarium:"${{ matrix.solarium }}" --no-update
 
             -   name: Install dependencies
                 env:
