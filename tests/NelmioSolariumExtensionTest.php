@@ -27,6 +27,7 @@ use Solarium\Plugin\Loadbalancer\Loadbalancer;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Kernel\ServicesBundle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -468,6 +469,15 @@ class NelmioSolariumExtensionTest extends TestCase
     private function createCompiledContainerForConfig(array $config, bool $debug = false, array $extraServices = []): ContainerBuilder
     {
         $container = $this->createContainer($debug);
+
+        // Symfony >= 8.1 moved core DI services (e.g. "event_dispatcher") out of
+        // FrameworkExtension into this bundle; a real Kernel registers it automatically.
+        if (class_exists(ServicesBundle::class)) {
+            $servicesExtension = (new ServicesBundle())->getContainerExtension();
+            $container->registerExtension($servicesExtension);
+            $container->loadFromExtension($servicesExtension->getAlias(), []);
+        }
+
         $container->registerExtension(new FrameworkExtension());
         $container->addDefinitions($extraServices);
         $container->registerExtension(new NelmioSolariumExtension());
